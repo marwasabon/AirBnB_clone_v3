@@ -89,14 +89,12 @@ class DBStorage:
 
     def get(self, cls, id):
         """Get a single object from the db"""
-        if isinstance (cls, str):
+        if isinstance(cls, str):
             try:
                 cls = eval(cls)
                 # check if cls is string
             except NameError:
                 return None
         if cls in classes.values():
-        # fix this 
+            # fix this
             return self.__session.query(cls).filter(cls.id == id).first()
-
-
