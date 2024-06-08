@@ -48,6 +48,7 @@ def get_city_id(city_id):
     # DELETE method
     if request.method == "DELETE":
         city.delete()
+        storage.save()
         return jsonify({}), 200
 
     # GET method
@@ -61,4 +62,4 @@ def get_city_id(city_id):
     keys_ignored = {"id", "created_at", "state_id" "updated_at"}
     [setattr(city, k, v) for k, v in data.items() if k not in keys_ignored]
     city.save()
-    return jsonify(city.to_dict())
+    return jsonify(city.to_dict()), 200

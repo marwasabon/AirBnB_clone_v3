@@ -39,6 +39,7 @@ def get_state_id(state_id):
     # DELETE method
     if request.method == "DELETE":
         state.delete()
+        storage.save()
         return jsonify({}), 200
 
     # GET method
@@ -52,4 +53,4 @@ def get_state_id(state_id):
     keys_ignored = {"id", "created_at", "updated_at"}
     [setattr(state, k, v) for k, v in data.items() if k not in keys_ignored]
     state.save()
-    return jsonify(state.to_dict())
+    return jsonify(state.to_dict()), 200
