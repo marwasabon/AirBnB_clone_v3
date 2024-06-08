@@ -48,8 +48,7 @@ def get_city_id(city_id):
     # DELETE method
     if request.method == "DELETE":
         city.delete()
-        storage.save()
-        return jsonify({})
+        return jsonify({}), 200
 
     # GET method
     elif request.method == "GET":

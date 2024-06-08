@@ -39,8 +39,7 @@ def get_state_id(state_id):
     # DELETE method
     if request.method == "DELETE":
         state.delete()
-        storage.save()
-        return jsonify({})
+        return jsonify({}), 200
 
     # GET method
     elif request.method == "GET":
