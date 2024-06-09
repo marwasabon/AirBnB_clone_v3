@@ -6,7 +6,7 @@ from flask import jsonify, abort, request
 from models.amenity import Amenity
 
 
-@app_views.route("/amenitites", methods=["GET", "POST"])
+@app_views.route("/amenities", methods=["GET", "POST"])
 def get_amenites():
     """ Get methods for amenitites routes"""
     # get method
@@ -29,9 +29,9 @@ def get_amenites():
     return jsonify(amenity.to_dict()), 201
 
 
-@app_views.route("/amenitites/<amenity_id>", methods=["GET", "DELETE", "PUT"])
+@app_views.route("/amenities/<amenity_id>", methods=["GET", "DELETE", "PUT"])
 def get_amenity_id(amenity_id):
-    """ Get methods for retriving amenitites objects by id"""
+    """ Get methods for retriving amenities objects by id"""
     amenity = storage.get("Amenity", amenity_id)
     if amenity is None:
         return jsonify({'error': 'Amenity not found'}), 404
