@@ -19,9 +19,9 @@ def get_amenites():
     # post method
     data = request.get_json()
     if not data:
-        return "Not a JSON", 400
+        return jsonify({'error': 'Not a JSON'}), 400
     if "name" not in data:
-        return "Missing name", 400
+        return jsonify({'error': 'Missing name'}), 400
 
     # create new amenity
     amenity = Amenity(**data)
@@ -36,6 +36,7 @@ def get_amenity_id(amenity_id):
     if amenity is None:
         return jsonify({'error': 'Amenity not found'}), 404
     return jsonify(amenity.to_dict())
+
     # DELETE method
     if request.method == "DELETE":
         amenity.delete()
@@ -49,7 +50,7 @@ def get_amenity_id(amenity_id):
     # PUT method
     data = request.get_json()
     if not data:
-        return "Not a JSON", 400
+        return jsonify({'error': 'Not a JSON'}), 400
     keys_ignored = {"id", "created_at", "updated_at"}
     [setattr(amenity, k, v) for k, v in data.items() if k not in keys_ignored]
     amenity.save()
