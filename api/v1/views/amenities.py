@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 """ Python script for State Routes & views"""
 from api.v1.views import app_views
-from models.state import State
 from models import storage
 from flask import jsonify, abort, request
 from models.amenity import Amenity
@@ -18,7 +17,7 @@ def get_amenites():
         return jsonify(amenitites)
 
     # post method
-    data = request.get_json(silent=True)
+    data = request.get_json()
     if not data:
         return "Not a JSON", 400
     if "name" not in data:
@@ -48,7 +47,7 @@ def get_amenity_id(amenity_id):
         return jsonify(amenity.to_dict())
 
     # PUT method
-    data = request.get_json(silent=True)
+    data = request.get_json()
     if not data:
         return "Not a JSON", 400
     keys_ignored = {"id", "created_at", "updated_at"}
