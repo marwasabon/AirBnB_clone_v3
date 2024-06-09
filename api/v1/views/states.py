@@ -17,7 +17,7 @@ def get_state():
         return jsonify(states)
 
     # post method
-    data = request.get_json()
+    data = request.get_json(silent=True)
     if not data:
         return "Not a JSON", 400
     if "name" not in data:
