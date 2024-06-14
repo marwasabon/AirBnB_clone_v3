@@ -48,10 +48,13 @@ def get_amenity_id(amenity_id):
 
     # PUT method
     elif request.method == "PUT":
+        if not amenity:
+            abort(404)
         data = request.get_json()
         if not data:
             abort(400, description="Not a JSON")
-        keys_ignored = {"id", "created_at", "updated_at"}
-        [setattr(amenity, k, v) for k, v in data.items() if k not in keys_ignored]
+        keys_ignored = {"id", "created_at", "updated_at"}[
+                setattr(amenity, k, v) for k, v in data.items()
+                if k not in keys_ignored]
         amenity.save()
         return jsonify(amenity.to_dict()), 200
