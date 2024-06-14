@@ -43,11 +43,11 @@ def get_amenity_id(amenity_id):
         return jsonify({}), 200
 
     # GET method
-    if request.method == "GET":
+    elif request.method == "GET":
         return jsonify(amenity.to_dict())
 
     # PUT method
-    elif request.method == "PUT":
+    if request.method == "PUT":
         data = request.get_json()
         if not data:
             abort(400, description="Not a JSON")
@@ -55,4 +55,4 @@ def get_amenity_id(amenity_id):
                 setattr(amenity, k, v) for k, v in data.items()
                 if k not in keys_ignored]
         amenity.save()
-        return jsonify(amenity.to_dict()), 200
+    return jsonify(amenity.to_dict()), 200
