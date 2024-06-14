@@ -33,9 +33,11 @@ def get_amenites():
 def get_amenity_id(amenity_id):
     """ Get methods for retriving amenities objects by id"""
     amenity = storage.get("Amenity", amenity_id)
-    if amenity is None:
-        return jsonify({'error': 'Amenity not found'}), 404
-    return jsonify(amenity.to_dict())
+    if not amenity:
+        abort(404)
+    #if amenity is None:
+        #return jsonify({'error': 'Amenity not found'}), 404
+    # return jsonify(amenity.to_dict())
 
     # DELETE method
     if request.method == "DELETE":
