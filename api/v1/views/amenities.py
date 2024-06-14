@@ -55,4 +55,4 @@ def get_amenity_id(amenity_id):
                 setattr(amenity, k, v) for k, v in data.items()
                 if k not in keys_ignored]
         amenity.save()
-    return jsonify(amenity.to_dict()), 200
+        return jsonify(amenity.to_dict()), 200
