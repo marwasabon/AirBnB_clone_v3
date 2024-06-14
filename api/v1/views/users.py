@@ -38,7 +38,7 @@ def get_user_id(amenity_id):
     """ Get methods for retriving users objects by id"""
     user = storage.get("User", amenity_id)
     if user is None:
-        return jsonify({'error': 'User not found'}), 404
+        abort(404)
     return jsonify(user.to_dict())
 
     # DELETE method
