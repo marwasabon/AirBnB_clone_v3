@@ -48,8 +48,6 @@ def get_amenity_id(amenity_id):
 
     # PUT method
     elif request.method == "PUT":
-        if not amenity:
-            abort(404)
         data = request.get_json()
         if not data:
             abort(400, description="Not a JSON")
