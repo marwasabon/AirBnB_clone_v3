@@ -52,10 +52,11 @@ def get_user_id(user_id):
         return jsonify(user.to_dict())
 
     # PUT method
-    data = request.get_json()
-    if not data:
-        return jsonify({'error': 'Not a JSON'}), 400
-    keys_ignored = {"id", "email", "created_at", "updated_at"}
-    [setattr(user, k, v) for k, v in data.items() if k not in keys_ignored]
-    user.save()
-    return jsonify(user.to_dict()), 200
+    elif request.method == "PUT":
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'Not a JSON'}), 400
+        keys_ignored = {"id", "email", "created_at", "updated_at"}
+        [setattr(user, k, v) for k, v in data.items() if k not in keys_ignored]
+        user.save()
+        return jsonify(user.to_dict()), 200
