@@ -1,7 +1,10 @@
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-
+from sqlalchemy.orm import declarative_base
+from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Enum
 db = SQLAlchemy()
+
+Base = declarative_base()
 
 class BaseModel(db.Model):
     __abstract__ = True  # Indicates that this class should not be created as a table

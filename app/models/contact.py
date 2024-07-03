@@ -2,7 +2,7 @@ from app import db
 from app.models.base_model import BaseModel
 
 
-class Contact(BaseModel):
+class Contact(db.Model):
     __tablename__ = 'contacts'
 
     id = db.Column(db.Integer, primary_key=True)
