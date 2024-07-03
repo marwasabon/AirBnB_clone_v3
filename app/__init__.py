@@ -19,6 +19,8 @@ def create_app():
     from app.models.quality import QualityCheck
     from .main.routes import main as main_blueprint
     from .main.item_routes import item_bp as item_bp
+    from .main.user_routes import user_bp as user_bp
     app.register_blueprint(main_blueprint)
     app.register_blueprint(item_bp)
+    app.register_blueprint(user_bp)
     return app
