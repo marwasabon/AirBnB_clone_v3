@@ -1,13 +1,54 @@
-from flask import render_template,Blueprint, request, jsonify, abort
+from flask import render_template,Blueprint, request, jsonify, abort, current_app as app
 from app import db
-from app.models.contact import Contact
-from app.models.db_storage import DBStorage, db
+from ..models.contact import Contact
+from ..models.user import User
+from ..models.db_storage import DBStorage, db
+from flask import request, redirect, url_for, render_template, flash
+from flask_login import login_user, logout_user, login_required, current_user
+from werkzeug.security import check_password_hash
+from flask_mail import Message
+from app import mail
 
 main = Blueprint('main', __name__)
 storage = DBStorage(db)
 @main.route('/')
 def home():
     return render_template('index.html')
+
+@main.route('/index')
+def index():
+    return render_template('index.html')
+
+@main.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        user = User.query.filter_by(username=username).first()
+        if user and user.check_password(password):
+            login_user(user)
+            return redirect(url_for('main.index'))
+        else:
+            flash('Invalid username or password')
+    return render_template('login.html')
+
+@main.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('main.login'))
+@main.route('/test_mail')
+def send_test_email():
+    try:
+        msg = Message(
+            subject="Test Email",
+            recipients=[app.config['MAIL_USERNAME']],
+            body="This is a test email sent from Flask using Gmail."
+        )
+        mail.send(msg)
+        return jsonify({'message': 'Test email sent successfully!'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @main.route('/contacts', methods=['GET'])
 def get_contacts():

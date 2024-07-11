@@ -10,4 +10,6 @@ class Match(db.Model):
     potential_owner_user_id = Column(Integer, ForeignKey('users.id'))
     item = relationship('Item', back_populates='matches')
     quality_checks = relationship('QualityCheck', back_populates='match')
-
+    status = db.Column(db.String(50), nullable=False, default='pending')
+    #claim = relationship('Claim', back_populates='matches')
+    claim_id = Column(Integer, ForeignKey('claims.id'))  # Add claim_id field

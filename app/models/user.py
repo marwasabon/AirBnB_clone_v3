@@ -2,23 +2,42 @@ from app import db
 from app.models.base_model import BaseModel
 from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Enum
 from sqlalchemy.orm import relationship
+from app.models.role import Role
+from werkzeug.security import generate_password_hash, check_password_hash
 from hashlib import md5
+from flask_login import UserMixin
 
-class User(db.Model):
+
+class User(db.Model, UserMixin):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(30), unique=True)
-    password = db.Column(db.String(100), nullable=False)
+    password = db.Column(db.String(255), nullable=False)
     email = Column(String(100), nullable=False)
     items = relationship('Item', back_populates='user')
     claims = relationship('Claim', back_populates='user')
+    role_id = Column(Integer, ForeignKey('roles.id'))
+    role = relationship('Role', backref='users')
     
     def __repr__(self):
-        return 'User: [id: {}, username: {}, Email: {}'.format(self.id, self.username, self.email)
+        return 'User: [id: {}, username: {}, Email: {}, role: {}'.format(self.id, self.username, self.email,self.role)
     
+    def set_password(self, password):
+        self.password = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
+    
+    def get_id(self):
+        return str(self.id)
+    
+    @property
+    def is_active(self):
+        return True  # Example: Always return True for simplicity
+   
     def __setattr__(self, name, value):
         """sets a password with md5 encryption"""
         if name == "password":
-            value = md5(value.encode()).hexdigest()
+            value = generate_password_hash(value)
         super().__setattr__(name, value)
