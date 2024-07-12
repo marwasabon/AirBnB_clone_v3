@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """ objects that handle all default RestFul API actions for Users """
-from flask import Blueprint, request, jsonify, redirect, url_for,flash
+from flask import Blueprint, request, jsonify, redirect, url_for,flash,current_app
 from ..models.user import User
 from ..models.role import Role
 from flask import render_template,Blueprint, request, jsonify, abort
@@ -11,11 +11,15 @@ from flask_bcrypt import Bcrypt
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SelectField
 from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
-
+from flask_mail import Message
+from app import db, mail
 # usecase for when username already exist
 user_bp = Blueprint('user_bp', __name__)
 storage = DBStorage(db)
 bcrypt = Bcrypt()
+# Initialize the URLSafeTimedSerializer
+def get_serializer():
+    return URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
 
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
@@ -42,7 +46,7 @@ def register():
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         role = Role.query.get(form.role_id.data)
-        user = User(username=form.username.data, email=form.email.data, password=hashed_password)
+        user = User(username=form.username.data, email=form.email.data, password=form.password.data)
         storage.new(user)
         storage.save()
         flash('Congratulations, you are now a registered user!', 'success')
@@ -101,8 +105,9 @@ def forgot_password():
         email = request.form['email']
         user = User.query.filter_by(email=email).first()
         if user:
+            s = get_serializer()
             token = s.dumps(user.email, salt='password-reset-salt')
-            reset_url = url_for('reset_password', token=token, _external=True)
+            reset_url = url_for('user_bp.reset_password', token=token, _external=True)
             msg = Message('Password Reset Request', recipients=[email])
             msg.body = f'Please click the link to reset your password: {reset_url}'
             mail.send(msg)
@@ -114,10 +119,10 @@ def forgot_password():
 @user_bp.route('/reset_password/<token>', methods=['GET', 'POST'])
 def reset_password(token):
     try:
-        email = s.loads(token, salt='password-reset-salt', max_age=3600)  # Token valid for 1 hour
+        email = s.loads(token, salt='password-reset-salt', max_age=48*3600)  # Token valid for 1 hour
     except:
         flash('The password reset link is invalid or has expired.', 'error')
-        return redirect(url_for('forgot_password'))
+        return redirect(url_for('user_bp.forgot_password'))
 
     if request.method == 'POST':
         user = User.query.filter_by(email=email).first()
