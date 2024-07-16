@@ -9,10 +9,12 @@ from app.models.db_storage import DBStorage , db
 from itsdangerous import URLSafeTimedSerializer
 from flask_bcrypt import Bcrypt
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SelectField
-from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
+
 from flask_mail import Message
 from app import db, mail
+from ..utils.forms import RegistrationForm
+from flask_login import login_required, current_user
+
 # usecase for when username already exist
 user_bp = Blueprint('user_bp', __name__)
 storage = DBStorage(db)
@@ -21,22 +23,7 @@ bcrypt = Bcrypt()
 def get_serializer():
     return URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
 
-class RegistrationForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired()])
-    email = StringField('Email', validators=[DataRequired(), Email()])
-    password = PasswordField('Password', validators=[DataRequired(), EqualTo('confirm', message='Passwords must match')])
-    confirm = PasswordField('Repeat Password')
-    role_id = SelectField('Role', coerce=int, validators=[DataRequired()])
 
-    def validate_username(self, username):
-        user = User.query.filter_by(username=username.data).first()
-        if user:
-            raise ValidationError('Please use a different username.')
-
-    def validate_email(self, email):
-        user = User.query.filter_by(email=email.data).first()
-        if user:
-            raise ValidationError('Please use a different email address.')
 
 @user_bp.route('/register', methods=['GET', 'POST'])
 def register():
@@ -54,6 +41,38 @@ def register():
     
     return render_template('register.html', title='Register', form=form)
 
+@user_bp.route('/users')
+@login_required
+def list_users():
+    users = User.query.all()
+    return render_template('list_users.html', title='Users', users=users)
+
+@user_bp.route('/users/edit/<int:user_id>', methods=['GET', 'POST'])
+@login_required
+def edit_user(user_id):
+    user = User.query.get_or_404(user_id)
+    form = EditUserForm()
+    if form.validate_on_submit():
+        user.username = form.username.data
+        user.email = form.email.data
+        db.session.commit()
+        flash('User has been updated!', 'success')
+        return redirect(url_for('users.list_users'))
+    elif request.method == 'GET':
+        form.username.data = user.username
+        form.email.data = user.email
+    return render_template('edit_user.html', title='Edit User', form=form, user=user)
+
+@user_bp.route('/users/delete/<int:user_id>', methods=['POST'])
+@login_required
+def delete_user(user_id):
+    user = User.query.get_or_404(user_id)
+    db.session.delete(user)
+    db.session.commit()
+    flash('User has been deleted!', 'success')
+    return redirect(url_for('users.list_users'))
+
+# apis 
 @user_bp.route('/users', methods=['POST'])
 def create_user():
     data = request.get_json()
@@ -118,6 +137,8 @@ def forgot_password():
     
 @user_bp.route('/reset_password/<token>', methods=['GET', 'POST'])
 def reset_password(token):
+    print(f"Received token: {token}")  # Debug: Print the received token
+    s = get_serializer()
     try:
         email = s.loads(token, salt='password-reset-salt', max_age=48*3600)  # Token valid for 1 hour
     except:
@@ -125,12 +146,14 @@ def reset_password(token):
         return redirect(url_for('user_bp.forgot_password'))
 
     if request.method == 'POST':
+        print(f"here  token: {token}")  # Debug2: Print the received token
+
         user = User.query.filter_by(email=email).first()
         password = request.form['password']
-        user.set_password(password)
-        db.session.commit()
+        user.password = password #issue fixed
+        storage.save()
         flash('Your password has been updated!', 'success')
-        return redirect(url_for('login'))
+        return redirect(url_for('main.login'))
 
-    return render_template('reset_password.html')
+    return render_template('reset_password.html', token=token)
 

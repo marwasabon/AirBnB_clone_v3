@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine ,MetaData , Table
 class MySQLConnectionTester:
     def __init__(self, host, database, username='root', password=''):
-        self.uri = f"mysql://silver:Password_12345@localhost/contact"
+        self.uri = f"mysql://silver:Password_12345@192.168.33.10/contact"
 
     def test_connection(self):
         try:

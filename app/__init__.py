@@ -6,6 +6,7 @@ from .models.user import User
 from flask_migrate import Migrate
 from flask_login import LoginManager ,UserMixin
 from flask_mail import Mail
+import os
 
 mail = Mail()
 def create_app():
@@ -22,6 +23,10 @@ def create_app():
     def load_user(user_id):
         return User.query.get(int(user_id))
     #migrate = Migrate(app, db)  # Initialize Flask-Migrate
+    
+    # Ensure the upload folder exists
+    if not os.path.exists(app.config['UPLOAD_FOLDER']):
+        os.makedirs(app.config['UPLOAD_FOLDER'])
     from app.models.contact import Contact
     from app.models.role import Role
     from app.models.user import User

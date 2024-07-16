@@ -8,12 +8,14 @@ from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import check_password_hash
 from flask_mail import Message
 from app import mail
+from ..utils.send_notification import send_email 
 
 main = Blueprint('main', __name__)
 storage = DBStorage(db)
 @main.route('/')
 def home():
     return render_template('index.html')
+
 
 @main.route('/index')
 def index():
@@ -37,8 +39,12 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('main.login'))
+
+
 @main.route('/test_mail')
 def send_test_email():
+    send_email('Test Subject', 'marwaasabon@gmail.com', 'This is a test email body.', '<h1>This is a test email body in HTML</h1>')
+    #this is for testing the email
     try:
         msg = Message(
             subject="Test Email",
@@ -49,7 +55,28 @@ def send_test_email():
         return jsonify({'message': 'Test email sent successfully!'}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+from flask import flash
 
+@main.route('/upload', methods=['POST'])
+def upload_file():
+    if 'file' not in request.files:
+        flash('No file part')
+        return redirect(request.url)
+    file = request.files['file']
+    if file.filename == '':
+        flash('No selected file')
+        return redirect(request.url)
+    if file:
+        filename = secure_filename(file.filename)
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(filepath)
+        
+        # Assuming you have an item instance ready to add an image to
+        item = Item(name="Example Item", image_url=filepath)
+        db.session.add(item)
+        db.session.commit()
+        
+        return redirect(url_for('uploaded_file', filename=filename))
 @main.route('/contacts', methods=['GET'])
 def get_contacts():
     contacts = storage.query(Contact)

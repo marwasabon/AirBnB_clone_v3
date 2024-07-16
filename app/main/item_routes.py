@@ -8,6 +8,45 @@ from app.models.db_storage import DBStorage
 item_bp = Blueprint('item_bp', __name__)
 storage = DBStorage(db)
 
+import os
+from flask import Blueprint, request, redirect, url_for, flash, render_template, current_app
+from flask_login import login_required, current_user
+from werkzeug.utils import secure_filename
+from ..models.item import Item
+from ..utils.forms import ItemUploadForm
+from app import db
+
+item_bp = Blueprint('item_bp', __name__)
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'png', 'jpg', 'jpeg', 'gif'}
+
+@item_bp.route('/upload_item', methods=['GET', 'POST'])
+@login_required
+def upload_item():
+    form = ItemUploadForm()
+    if form.validate_on_submit():
+        file = form.image.data
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+            file.save(file_path)
+
+            new_item = Item(
+                name=form.name.data,
+                description=form.description.data,
+                category=form.category.data,
+                status=form.status.data,
+                image_url=file_path,
+                user_id=current_user.id
+            )
+            storage.new(new_item)
+            storage.save()
+            flash('Item uploaded successfully!', 'success')
+            return redirect(url_for('item_bp.upload_item'))
+
+    return render_template('upload_item.html', form=form)
+
 
 @item_bp.route('/items', methods=['POST'])
 def create_item():
@@ -21,7 +60,7 @@ def create_item():
             user_id=data['user_id'])
     storage.new(new_item)
     storage.save()
-    #fix check if user exists
+    #fix check if user exists -- done 
     return jsonify({
         'message': 'Item created successfully',
         'item': {
