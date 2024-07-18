@@ -2,6 +2,7 @@
 """ objects that handle all default RestFul API actions for Users """
 from flask import Blueprint, request, jsonify, redirect, url_for,flash,current_app
 from ..models.user import User
+from ..models.match import Match
 from ..models.role import Role
 from flask import render_template,Blueprint, request, jsonify, abort
 from app import db
@@ -12,7 +13,7 @@ from flask_wtf import FlaskForm
 
 from flask_mail import Message
 from app import db, mail
-from ..utils.forms import RegistrationForm
+from ..utils.forms import *
 from flask_login import login_required, current_user
 
 # usecase for when username already exist
@@ -40,24 +41,38 @@ def register():
         return redirect(url_for('main.login'))
     
     return render_template('register.html', title='Register', form=form)
-
+# routes for the list all users page 
+# using paginatioons to display 5 users per page
 @user_bp.route('/users')
 @login_required
 def list_users():
     users = User.query.all()
-    return render_template('list_users.html', title='Users', users=users)
-
+    page = request.args.get('page', 1, type=int)
+    users_pagination = User.query.paginate(page=page, per_page=5)  # Change per_page to the number of users you want per page
+    return render_template('list_users.html', users_pagination=users_pagination)
+ # issues 
 @user_bp.route('/users/edit/<int:user_id>', methods=['GET', 'POST'])
 @login_required
 def edit_user(user_id):
     user = User.query.get_or_404(user_id)
+    print("Entering edit_user route")
     form = EditUserForm()
     if form.validate_on_submit():
+        print(f"Form Submitted with username: {form.username.data}, email: {form.email.data}")
         user.username = form.username.data
         user.email = form.email.data
-        db.session.commit()
+        print(f"User email: {user.email}")
+        print(f"User username: {user.username}")
+        try:
+            storage.save()
+            flash('User updated successfully', 'success')
+            return redirect(url_for('user_bp.list_users'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Error updating user: {e}', 'danger')
+        storage.save()
         flash('User has been updated!', 'success')
-        return redirect(url_for('users.list_users'))
+        return redirect(url_for('user_bp.list_users'))
     elif request.method == 'GET':
         form.username.data = user.username
         form.email.data = user.email
@@ -66,11 +81,15 @@ def edit_user(user_id):
 @user_bp.route('/users/delete/<int:user_id>', methods=['POST'])
 @login_required
 def delete_user(user_id):
-    user = User.query.get_or_404(user_id)
-    db.session.delete(user)
-    db.session.commit()
+    user = User.query.get_or_404(user_id) #fix 
+    matches = Match.query.filter_by(potential_owner_user_id=user_id).first()
+    if matches:
+        flash('Cannot delete user. There are related matches that need to be handled first.', 'danger')
+        return redirect(url_for('user_bp.list_users'))
+    storage.delete(user)
+    storage.save()
     flash('User has been deleted!', 'success')
-    return redirect(url_for('users.list_users'))
+    return redirect(url_for('user_bp.list_users'))
 
 # apis 
 @user_bp.route('/users', methods=['POST'])
@@ -111,7 +130,7 @@ def update_user(user_id):
     return jsonify({'message': 'User Updated successfully','id': user.id, 'username': user.username, 'email': user.email})
 
 @user_bp.route('/users/<int:user_id>', methods=['DELETE'])
-def delete_user(user_id):
+def delete_user_2(user_id):
     user = User.query.get_or_404(user_id)
     storage.delete(user)
     storage.save()
