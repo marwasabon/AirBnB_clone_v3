@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from .config import Config  # Import the Config class
 from .models.db_storage import DBStorage,db 
@@ -19,9 +19,18 @@ def create_app():
     login_manager.init_app(app)
     login_manager.login_view = 'main.login'  # Set the login view for Flask-Login
     mail.init_app(app)
+    
     @login_manager.user_loader
     def load_user(user_id):
         return User.query.get(int(user_id))
+    
+    def get_filename(path):
+        return os.path.basename(path)
+    app.jinja_env.filters['get_filename'] = get_filename
+    
+    @app.route('/images/<filename>')
+    def uploaded_file(filename):
+        return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
     #migrate = Migrate(app, db)  # Initialize Flask-Migrate
     
     # Ensure the upload folder exists

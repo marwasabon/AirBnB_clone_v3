@@ -52,11 +52,13 @@ def list_users():
     return render_template('list_users.html', users_pagination=users_pagination)
  # issues 
 @user_bp.route('/users/edit/<int:user_id>', methods=['GET', 'POST'])
-@login_required
+#@login_required
 def edit_user(user_id):
     user = User.query.get_or_404(user_id)
     print("Entering edit_user route")
     form = EditUserForm()
+    if request.method == 'POST':
+        print("Form Submitted",form);
     if form.validate_on_submit():
         print(f"Form Submitted with username: {form.username.data}, email: {form.email.data}")
         user.username = form.username.data

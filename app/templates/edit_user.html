@@ -3,7 +3,7 @@
     <div class="container">
         <h2>Edit User</h2>
         <form method="POST" action="{{ url_for('user_bp.edit_user', user_id=user.id) }}">
-            <!--{{ form.hidden_tag() }}-->
+            {{ form.hidden_tag() }}
             <div class="form-group">
                 {{ form.username.label }}
                 {{ form.username(class="form-control") }}

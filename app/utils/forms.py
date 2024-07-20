@@ -3,15 +3,14 @@ from wtforms import StringField,PasswordField, SelectField, TextAreaField, FileF
 from wtforms.validators import DataRequired, Email,Length, EqualTo, ValidationError
 from ..models.user import User 
 from flask_login import login_required, current_user
-
+from flask_wtf.file import FileField, FileAllowed
 
 class ItemUploadForm(FlaskForm):
     name = StringField('Item Name', validators=[DataRequired()])
     description = TextAreaField('Description', validators=[DataRequired()])
     category = SelectField('Category', choices=[('Lost', 'Lost'), ('Found', 'Found')], validators=[DataRequired()])
     status = SelectField('Status', choices=[('Lost', 'Lost'), ('Found', 'Found')], validators=[DataRequired()])
-    image = FileField('Image')
-    
+    image = FileField('Image', validators=[FileAllowed(['jpg', 'png'])])    
     
     
 class RegistrationForm(FlaskForm):
@@ -39,13 +38,4 @@ class EditUserForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
     email = StringField('Email', validators=[DataRequired(), Email()])
     submit = SubmitField('Update')
-
-    def validate_username(self, username):
-        user = User.query.filter_by(username=username.data).first()
-        if user and user.id != current_user.id:
-            raise ValidationError('That username is taken. Please choose a different one.')
-
-    def validate_email(self, email):
-        user = User.query.filter_by(email=email.data).first()
-        if user and user.id != current_user.id:
-            raise ValidationError('That email is taken. Please choose a different one.')
+    

@@ -1,0 +1,74 @@
+{% extends "layout.html" %}
+{% block title %}All Items{% endblock %}
+{% block content %}
+<div class="container">
+    
+    <h2>All Items</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Image</th>
+                <th>Description</th>
+                <th>Category</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item.id }}</td>
+                <td>
+                    {% if item.image_url %}
+                    <img src="{{ url_for('uploaded_file', filename=item.image_url|get_filename) }}" alt="Item Image" width="100">                    {% endif %}
+                </td>
+                <td>{{ item.description }}</td>
+                <td>{{ item.category }}</td>
+                <td>
+                    <button class="btn btn-primary" data-toggle="modal" data-target="#claimModal" data-item-id="{{ item.id }}">Claim</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Claim Modal -->
+<div class="modal fade" id="claimModal" tabindex="-1" role="dialog" aria-labelledby="claimModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="claimModalLabel">Claim Item</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="claimForm" method="POST" action="{{ url_for('item_bp.claim_item') }}">
+                <div class="modal-body">
+                    <input type="hidden" name="item_id" id="item_id">
+                    <div class="form-group">
+                        <label for="additional_information">Additional Information</label>
+                        <textarea class="form-control" id="additional_information" name="additional_information" rows="3" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Submit Claim</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    $('#claimModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget)
+        var itemId = button.data('item-id')
+        var modal = $(this)
+        modal.find('.modal-body #item_id').val(itemId)
+    })
+});
+</script>
+
+{% endblock %}
