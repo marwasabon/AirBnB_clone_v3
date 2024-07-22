@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField,PasswordField, SelectField, TextAreaField, FileField , SubmitField, BooleanField
+from wtforms import StringField, PasswordField, SelectField, TextAreaField, FileField , SubmitField, BooleanField
 from wtforms.validators import DataRequired, Email,Length, EqualTo, ValidationError
 from ..models.user import User 
 from flask_login import login_required, current_user
@@ -19,6 +19,7 @@ class RegistrationForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired(), EqualTo('confirm', message='Passwords must match')])
     confirm = PasswordField('Repeat Password')
     role_id = SelectField('Role', coerce=int, validators=[DataRequired()]) #bug to save role id
+    submit = SubmitField('Sign Up')
 
     def validate_username(self, username):
         user = User.query.filter_by(username=username.data).first()
@@ -38,4 +39,20 @@ class EditUserForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
     email = StringField('Email', validators=[DataRequired(), Email()])
     submit = SubmitField('Update')
-    
+
+    def validate_username(self, username):
+        user = User.query.filter_by(username=username.data).first()
+        if user and user.id != current_user.id:
+            raise ValidationError('That username is taken. Please choose a different one.')
+
+    def validate_email(self, email):
+        user = User.query.filter_by(email=email.data).first()
+        if user and user.id != current_user.id:
+            raise ValidationError('That email is taken. Please choose a different one.')
+        
+class LoginForm(FlaskForm):
+    username = StringField('Username',
+                        validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    remember = BooleanField('Remember Me')
+    submit = SubmitField('Login')

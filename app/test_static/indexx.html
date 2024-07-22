@@ -52,7 +52,7 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
-                <img src="{{ url_for('static', filename='images/LOST.png') }}" alt="App Logo" height="50">
+                <img src="images/LOST.png" alt="App Logo" height="50">
                 <span class="ms-2">LOST & FOUND</span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,16 +73,6 @@
             </div>
         </div>
     </nav>
-
-    <div class="container">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-    </div>
 
     <!-- Search Section -->
     <section class="search-section">
@@ -166,10 +156,10 @@
     </section>
 
     <!-- Footer -->
-    <footer class="footer py-3 bg-dark text-white text-center">
-        <div class="container">
-            <p class="mb-0">
-                <strong>Lost & Found</strong> by <a href="#" class="text-white">Your Company</a>. © 2024 All rights reserved.
+    <footer class="footer bg-light py-3">
+        <div class="container text-center">
+            <p>
+                <strong>Lost & Found</strong> by <a href="#">Your Company</a>. © 2024 All rights reserved.
             </p>
         </div>
     </footer>

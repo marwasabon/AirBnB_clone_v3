@@ -9,6 +9,7 @@ from werkzeug.security import check_password_hash
 from flask_mail import Message
 from app import mail
 from ..utils.send_notification import send_email 
+from ..utils.forms import *
 
 main = Blueprint('main', __name__)
 storage = DBStorage(db)
@@ -21,18 +22,24 @@ def home():
 def index():
     return render_template('index.html')
 
+@main.route('/landing')
+def landing_page():
+    return render_template('landing.html')
+
 @main.route('/login', methods=['GET', 'POST'])
 def login():
+    form = LoginForm()
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
         user = User.query.filter_by(username=username).first()
         if user and user.check_password(password):
+            flash('You have been logged in!', 'success')
             login_user(user)
             return redirect(url_for('main.index'))
         else:
             flash('Invalid username or password')
-    return render_template('login.html')
+    return render_template('login.html', title='Log In', form=form)
 
 @main.route('/logout')
 @login_required

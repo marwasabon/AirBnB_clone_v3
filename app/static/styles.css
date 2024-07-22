@@ -4,7 +4,7 @@ body {
 
 .hero {
     background: url('https://source.unsplash.com/1600x900/?lost-and-found') no-repeat center center;
-    background-image: url("../images/magnifying_001.jpg");
+    background-image: url("images/magnifying_001.jpg");
     background-repeat: no-repeat;
     background-size: cover;
     color: white;
@@ -98,6 +98,10 @@ body {
 .carousel-control-prev-icon,
 .carousel-control-next-icon {
     filter: invert(1);
+}
+
+.log {
+    padding-top: 40px;
 }
 
 .navbar img {
