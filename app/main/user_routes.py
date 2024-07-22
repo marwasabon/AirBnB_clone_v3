@@ -101,8 +101,7 @@ def create_user():
     role = Role.query.get(role_id)
     if role is None:
         return jsonify({ 'error': 'Role ID is missing' }), 400
-    user = User(username=data['username'], email=data['email'],role=role)
-    user.set_password(data['password'])
+    user = User(username=data['username'], email=data['email'],role=role, password=data['password'])
     storage.new(user)
     storage.save()
     return jsonify({ 'message': 'User created successfully','id': user.id, 'username': user.username,

@@ -19,7 +19,7 @@ from ..models.item import Item
 from ..utils.forms import ItemUploadForm
 from app import db
 
-item_bp = Blueprint('item_bp', __name__)
+#item_bp = Blueprint('item_bp', __name__)
 
  
 @item_bp.route('/upload_item', methods=['GET', 'POST'])
