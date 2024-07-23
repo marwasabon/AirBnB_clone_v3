@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify, send_from_directory
 
 from app.models.claim import Claim
+from app.utils.matching_process import find_potential_matches
 from ..models.item import Item 
 from ..models.user import User
 from flask import render_template,Blueprint, request, jsonify, abort
@@ -83,9 +84,12 @@ def create_item():
 def claim_item():
     item_id = request.form.get('item_id')
     item = Item.query.get_or_404(item_id)
+    
     new_claim = Claim(item_id=item.id, user_id=current_user.id, status='pending', additional_information=request.form.get('additional_information'))
     db.session.add(new_claim)
     db.session.commit()
+    potential_matches = find_potential_matches(new_claim)
+
     flash('Item claimed successfully', 'success')
     return redirect(url_for('item_bp.list_items'))
 
