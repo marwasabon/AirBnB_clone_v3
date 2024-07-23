@@ -36,6 +36,14 @@ def upload_item():
 
             new_item = Item(
                 name=form.name.data,
+                email=form.email.data,
+                phone=form.phone.data,
+                item_name=form.item_name.data,
+                item_category=form.item_category.data,
+                item_color=form.item_color.data,
+                item_brand=form.item_brand.data,
+                date_lost_found=form.date_lost_found.data,
+                location_lost_found=form.location_lost_found.data,
                 description=form.description.data,
                 category=form.category.data,
                 status=form.status.data,
@@ -47,6 +55,27 @@ def upload_item():
             flash('Item uploaded successfully!', 'success')
             return redirect(url_for('item_bp.list_items'))
     return render_template('upload_item.html', form=form)
+    '''form = ItemUploadForm()
+    if form.validate_on_submit():
+        file = form.image.data
+        if file:
+            filename = secure_filename(file.filename)
+            file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+            file.save(file_path)
+
+            new_item = Item(
+                name=form.name.data,
+                description=form.description.data,
+                category=form.category.data,
+                status=form.status.data,
+                image_url=file_path,
+                user_id=current_user.id
+            )
+            storage.new(new_item)
+            storage.save()
+            flash('Item uploaded successfully!', 'success')
+            return redirect(url_for('item_bp.list_items'))
+    return render_template('upload_item.html', form=form)'''
 
 @item_bp.route('/items', methods=['GET'])
 def list_items():
