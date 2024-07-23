@@ -24,7 +24,7 @@ def index():
 
 @main.route('/landing')
 def landing_page():
-    return render_template('landing.html')
+    return render_template('landing.html', title='Landing_page')
 
 @main.route('/login', methods=['GET', 'POST'])
 def login():
