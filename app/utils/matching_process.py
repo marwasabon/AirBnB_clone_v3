@@ -34,3 +34,31 @@ def find_potential_matches(new_claim):
     
     return potential_matches
 
+def find_potential_matches_for_lost_item(lost_item):
+    found_items = Item.query.filter_by(status='Found').all()
+    print(f"Found items with status 'Found': {[item.id for item in found_items]}")
+    potential_matches = []
+    
+    for found_item in found_items:
+        print(f"Checking found item: {found_item.id}")
+        if (found_item.item_category == lost_item.item_category and
+            found_item.item_color == lost_item.item_color and
+            found_item.item_brand == lost_item.item_brand and
+            lost_item.description in found_item.description):
+            print(f"Found item {found_item.id} matches the lost item {lost_item.id}")
+            potential_matches.append(found_item)
+        else:
+            print(f"Found item {found_item.id} does not match the lost item {lost_item.id}") 
+    
+    for match_item in potential_matches:
+        match = Match(
+            claim_id=None,  # No claim yet, only matching lost and found items
+            item_id=match_item.id,
+            potential_owner_user_id=lost_item.user_id,
+            status='potential'
+        )
+        storage.new(match)
+    
+    storage.save()
+    
+    return potential_matches

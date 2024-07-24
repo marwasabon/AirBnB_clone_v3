@@ -33,7 +33,7 @@ class RegistrationForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired(), EqualTo('confirm', message='Passwords must match')])
     confirm = PasswordField('Repeat Password')
-    role_id = SelectField('Role', coerce=int, validators=[DataRequired()]) #bug to save role id
+    #role_id = SelectField('Role', coerce=int, validators=[DataRequired()]) #bug to save role id
     submit = SubmitField('Sign Up')
 
     def validate_username(self, username):

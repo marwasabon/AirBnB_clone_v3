@@ -29,12 +29,19 @@ def get_serializer():
 @user_bp.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
-    form.role_id.choices = [(role.id, role.name) for role in Role.query.order_by('name')]
+    #form.role_id.choices = [(role.id, role.name) for role in Role.query.order_by('name')]
     
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        role = Role.query.get(form.role_id.data)
-        user = User(username=form.username.data, email=form.email.data, password=form.password.data)
+        default_role = Role.query.filter_by(name='User').first()
+        default_role_name = "User"
+        if not default_role:
+            # Create the default role if it doesn't exist
+            default_role = Role(name=default_role_name)
+            storage.new(default_role)
+            storage.save()    
+        
+        user = User(username=form.username.data, email=form.email.data, password=form.password.data, role=default_role)
         storage.new(user)
         storage.save()
         flash('Congratulations, you are now a registered user!', 'success')

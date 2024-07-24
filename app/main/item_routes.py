@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify, send_from_directory
 
 from app.models.claim import Claim
-from app.utils.matching_process import find_potential_matches
+from app.utils.matching_process import find_potential_matches, find_potential_matches_for_lost_item
 from ..models.item import Item 
 from ..models.user import User
 from flask import render_template,Blueprint, request, jsonify, abort
@@ -52,6 +52,7 @@ def upload_item():
             )
             storage.new(new_item)
             storage.save()
+            potential_matches = find_potential_matches_for_lost_item(new_item)
             flash('Item uploaded successfully!', 'success')
             return redirect(url_for('item_bp.list_items'))
     return render_template('upload_item.html', form=form)
@@ -79,8 +80,10 @@ def upload_item():
 
 @item_bp.route('/items', methods=['GET'])
 def list_items():
-    items = Item.query.all()
-    return render_template('list_items.html', items=items)
+    page = request.args.get('page', 1, type=int)  
+    items_per_page = 10  # Adjust this number to your needs  
+    items = Item.query.paginate(page=page, per_page=items_per_page)  
+    return render_template('list_items.html', items=items)  
 
 @item_bp.route('/items', methods=['POST'])
 def create_item():
@@ -114,9 +117,23 @@ def claim_item():
     item_id = request.form.get('item_id')
     item = Item.query.get_or_404(item_id)
     
-    new_claim = Claim(item_id=item.id, user_id=current_user.id, status='pending', additional_information=request.form.get('additional_information'))
-    db.session.add(new_claim)
-    db.session.commit()
+    file = request.files.get('image')
+    print("file is ",file)
+    image_filename = None
+    if file and file.filename:
+        image_filename = secure_filename(file.filename)
+        file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], image_filename))
+    print("file is ",image_filename)
+    new_claim = Claim(
+        item_id=item.id,
+        user_id=current_user.id,
+        status='pending',
+        additional_information=request.form.get('additional_information'),
+        image_url=image_filename
+    )
+    
+    storage.new(new_claim)
+    storage.save()
     potential_matches = find_potential_matches(new_claim)
 
     flash('Item claimed successfully', 'success')
@@ -125,6 +142,12 @@ def claim_item():
 @item_bp.route('/images/<filename>')
 def uploaded_file(filename):
     return send_from_directory(current_app.config['UPLOAD_FOLDER'], filename)
+
+
+@item_bp.route('/<int:item_id>')
+def item_detail(item_id):
+    item = Item.query.get_or_404(item_id)
+    return render_template('item_details.html', item=item)
 
 @item_bp.route('/items', methods=['GET'])
 def search_items():

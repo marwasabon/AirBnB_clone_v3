@@ -49,10 +49,12 @@ def create_app():
     from .main.user_routes import user_bp as user_bp
     from .main.claim_routes import claim_bp as claim_bp
     from .main.match_routes import match_bp as match_bp
+    from .main.quality_routes import quality_bp as quality_bp
     app.register_blueprint(main_blueprint)
     app.register_blueprint(item_bp)
     app.register_blueprint(user_bp)
     app.register_blueprint(claim_bp)
     app.register_blueprint(match_bp)
+    app.register_blueprint(quality_bp)
     migrate = Migrate(app, db)
     return app

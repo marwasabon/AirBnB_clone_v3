@@ -14,4 +14,6 @@ class Claim(db.Model):
     user_id = Column(Integer, ForeignKey('users.id'))
     item = relationship('Item', back_populates='claims')
     user = relationship('User', back_populates='claims')
+    image_url = Column(String(255), nullable=True)  
+
     #matches = relationship('Match', back_populates='claims')
