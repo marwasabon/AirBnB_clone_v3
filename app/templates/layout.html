@@ -42,7 +42,9 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-header">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
+                <a href="{{ url_for('main.index') }}">
                 <img src="{{ url_for('static', filename='images/LOST.png') }}" alt="App Logo"> <!-- Placeholder for logo -->
+                </a>
                 <span class="ms-2">LOST & FOUND</span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,20 +67,24 @@
                         <a class="nav-link" href="{{ url_for('item_bp.upload_item') }}">Create Request</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('item_bp.upload_item') }}">Search Results</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('item_bp.upload_item') }}">Quality Checker</a>
                     </li>
+                    {% if title not in ('Landing_page', 'Log In') %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.logout') }}">Log Out</a>
+                    </li>
+                    {% endif %}
                     {% endif %}
                 </ul>
             </div>
         </div>
     </nav>
-
+    <br>
+    <br>
     <div class="container">
+        <br>
     <br>
-    <br>
+   
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
@@ -91,11 +97,12 @@
     {% block content %}{% endblock %}
 
 <!-- footer-->
-
+    <br>
+    <br>
     <footer class="footer py-3 bg-dark text-white text-center">
         <div class="container">
             <p class="mb-0">
-                <strong>Lost & Found</strong> by <a href="#" class="text-white">Your Company</a>. © 2024 All rights reserved.
+                <strong>Lost & Found</strong> by <a href="{{ url_for('main.landing_page') }}" class="text-white">Your Company</a>. © 2024 All rights reserved.
             </p>
         </div>
     </footer>
