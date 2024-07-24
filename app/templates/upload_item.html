@@ -12,7 +12,7 @@
                     {{ form.name.label(class="form-label") }}
                     {{ form.name(class="form-control", placeholder="e.g. Alex Smith") }}
                     {% for error in form.name.errors %}
-                        <span class="text-danger">{{ error }}</span>
+                        <span class="invalid-feedback">{{ error }}</span>
                     {% endfor %}
                 </div>
             </div>

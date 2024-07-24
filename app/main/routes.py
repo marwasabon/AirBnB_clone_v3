@@ -24,7 +24,7 @@ def index():
 
 @main.route('/landing')
 def landing_page():
-    return render_template('landing.html')
+    return render_template('landing.html', title='Landing_page')
 
 @main.route('/login', methods=['GET', 'POST'])
 def login():
@@ -45,6 +45,7 @@ def login():
 @login_required
 def logout():
     logout_user()
+    flash("You've Logged OUT successfully", 'success')
     return redirect(url_for('main.login'))
 
 
