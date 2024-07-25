@@ -8,12 +8,12 @@
 
 The Lost & Found Item Recovery Platform is a centralized web application designed to streamline the process of reporting lost items, searching for found items, and facilitating their return to the rightful owners. This project aims to enhance community trust and cooperation, ensuring that lost belongings can be recovered efficiently. 
 
-[Deployed Site Link](https://your-deployed-site-link.com)  
+[Deployed Site Link](https://www.marwasabon.tech)  
 [Final Project Blog Article](https://your-blog-article-link.com)  
 
 **Authors:**  
-- [Your Name](https://www.linkedin.com/in/your-linkedin-profile)  
-- [Co-author Name](https://www.linkedin.com/in/co-author-linkedin-profile)  
+- Marwa Sabon (https://www.linkedin.com/in/marwa-jaberallah/) 
+- Emmanuel Nwafor SE (https://www.linkedin.com/in/co-author-linkedin-profile)  
 
 ## Installation
 
@@ -21,7 +21,7 @@ To set up the project locally, follow these steps:
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/your-username/lost-found-item-recovery.git
+   git clone  https://github.com/marwasabon/flask-app
    ```
 
 2. **Navigate into the project directory:**
