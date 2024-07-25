@@ -35,7 +35,7 @@ def login():
         user = User.query.filter_by(username=username).first()
         if user and user.check_password(password):
             flash('You have been logged in!', 'success')
-            login_user(user)
+            login_user(user, remember=form.remember.data)
             return redirect(url_for('main.index'))
         else:
             flash('Invalid username or password')

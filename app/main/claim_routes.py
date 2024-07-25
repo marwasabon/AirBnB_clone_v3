@@ -47,3 +47,13 @@ def delete_claim(claim_id):
     storage.delete(claim)
     storage.save()
     return jsonify({'message': 'Claim deleted successfully'})
+
+@claim_bp.route('/claims/<int:claim_id>', methods=['GET'])
+@login_required
+def get_claim(claim_id):
+    claim = Claim.query.get_or_404(claim_id)
+    return jsonify({
+        'claim_id': claim.id,
+        'image_url': claim.image_url,
+        'additional_information': claim.additional_information
+    })

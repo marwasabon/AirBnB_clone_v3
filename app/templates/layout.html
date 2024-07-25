@@ -55,6 +55,11 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('main.landing_page') }}">Home</a>
                     </li>
+                    {% if current_user.is_authenticated and current_user.has_role('User') %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('user_bp.register') }}">Marwa</a>
+                    </li>
+                    {% endif %}
                     {% if title == 'Landing_page' %}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('user_bp.register') }}">Sign-up</a>
