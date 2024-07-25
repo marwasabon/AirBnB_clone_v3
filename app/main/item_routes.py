@@ -45,7 +45,6 @@ def upload_item():
                 date_lost_found=form.date_lost_found.data,
                 location_lost_found=form.location_lost_found.data,
                 description=form.description.data,
-                category=form.category.data,
                 status=form.status.data,
                 image_url=file_path,
                 user_id=current_user.id

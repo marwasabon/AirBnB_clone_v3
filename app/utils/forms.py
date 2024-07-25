@@ -23,7 +23,7 @@ class ItemUploadForm(FlaskForm):
     location_lost_found = StringField('Location Lost/Found', validators=[DataRequired()])
     image = FileField('Item Image', validators=[FileAllowed(['jpg', 'png'], 'Images only!')])
     description = TextAreaField('Description', validators=[DataRequired()])
-    category = SelectField('Category', choices=[('Lost', 'Lost'), ('Found', 'Found')], validators=[DataRequired()])
+    #category = SelectField('Category', choices=[('Lost', 'Lost'), ('Found', 'Found')], validators=[DataRequired()])
     status = SelectField('Status', choices=[('Lost', 'Lost'), ('Found', 'Found')], validators=[DataRequired()])
     submit = SubmitField('Submit Request')    
     

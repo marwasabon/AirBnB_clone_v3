@@ -1,5 +1,6 @@
 from flask import render_template,Blueprint, request, jsonify, abort, current_app as app
 from app import db
+from app.models.item import Item
 from ..models.contact import Contact
 from ..models.user import User
 from ..models.db_storage import DBStorage, db
