@@ -17,6 +17,15 @@ def get_items_with_claims():
 
     for item in items:
         claim_count = db.session.query(Claim).filter(Claim.item_id == item.id).count()
+        claims = Claim.query.filter(Claim.item_id == item.id).all()
+        claims_data = [{
+            'id': claim.id,
+            'date_claimed': claim.date_claimed,
+            'additional_information': claim.additional_information,
+            'status': claim.status,
+            'user_id': claim.user_id,
+            'image_url': claim.image_url
+        } for claim in claims]
         item_data.append({
             'id': item.id,
             'name': item.name,
@@ -34,7 +43,8 @@ def get_items_with_claims():
             'status': item.status,
             'date_reported': item.date_reported,
             'user_id': item.user_id,
-            'claims_count': claim_count
+            'claims_count': claim_count,
+            'claim': claims_data
         })
 
     return jsonify({'items': item_data})
