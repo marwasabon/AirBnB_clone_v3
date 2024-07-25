@@ -45,7 +45,6 @@ def upload_item():
                 date_lost_found=form.date_lost_found.data,
                 location_lost_found=form.location_lost_found.data,
                 description=form.description.data,
-                category=form.category.data,
                 status=form.status.data,
                 image_url=file_path,
                 user_id=current_user.id
@@ -123,20 +122,20 @@ def claim_item():
     if file and file.filename:
         image_filename = secure_filename(file.filename)
         file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], image_filename))
-    print("file is ",image_filename)
-    new_claim = Claim(
-        item_id=item.id,
-        user_id=current_user.id,
-        status='pending',
-        additional_information=request.form.get('additional_information'),
-        image_url=image_filename
-    )
+        print("file is ",image_filename)
+        new_claim = Claim(
+            item_id=item.id,
+            user_id=current_user.id,
+            status='pending',
+            additional_information=request.form.get('additional_information'),
+            image_url=image_filename
+         )
     
-    storage.new(new_claim)
-    storage.save()
-    potential_matches = find_potential_matches(new_claim)
+        storage.new(new_claim)
+        storage.save()
+        potential_matches = find_potential_matches(new_claim)
 
-    flash('Item claimed successfully', 'success')
+        flash('Item claimed successfully', 'success')
     return redirect(url_for('item_bp.list_items'))
 
 @item_bp.route('/images/<filename>')

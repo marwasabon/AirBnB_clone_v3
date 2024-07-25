@@ -46,6 +46,7 @@ def create_app():
     from app.models.quality import QualityCheck
     from .main.routes import main as main_blueprint
     from .main.item_routes import item_bp as item_bp
+    from .apis.api_item_routes import item_bp_api as item_bp_api
     from .main.user_routes import user_bp as user_bp
     from .main.claim_routes import claim_bp as claim_bp
     from .main.match_routes import match_bp as match_bp
@@ -56,5 +57,6 @@ def create_app():
     app.register_blueprint(claim_bp)
     app.register_blueprint(match_bp)
     app.register_blueprint(quality_bp)
+    app.register_blueprint(item_bp_api)
     migrate = Migrate(app, db)
     return app

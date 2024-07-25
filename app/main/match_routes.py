@@ -29,11 +29,11 @@ def confirm_match(match_id):
     match = Match.query.get(match_id)
     if not match:
         flash('Match not found', 'danger')
-        return redirect(url_for('match_bp.list_matches'))
+        return redirect(url_for('quality_bp.quality_checker'))
 
     if current_user.role.name != 'QualityChecker':
         flash('Unauthorized access', 'danger')
-        return redirect(url_for('match_bp.list_matches'))
+        return redirect(url_for('quality_bp.quality_checker'))
 
     # Create a new QualityCheck record
     quality_check = QualityCheck(
@@ -58,4 +58,36 @@ def confirm_match(match_id):
         send_email(subject, recipients, text_body, html_body)
 
     flash('Match confirmed successfully', 'success')
-    return redirect(url_for('match_bp.list_matches'))
+    return redirect(url_for('quality_bp.quality_checker'))
+
+
+# reject match
+@match_bp.route('/matches/<int:match_id>/reject', methods=['POST'])
+@login_required
+def reject_match(match_id):
+    match = Match.query.get(match_id)
+    if not match:
+        flash('Match not found', 'danger')
+        return redirect(url_for('quality_bp.quality_checker'))
+
+    if current_user.role.name != 'QualityChecker':
+        flash('Unauthorized access', 'danger')
+        return redirect(url_for('quality_bp.quality_checker'))
+
+    # Create a new QualityCheck record
+    quality_check = QualityCheck(
+        match_id=match.id,
+        quality_checker_user_id=current_user.id,
+        confirmed_owner_user_id=match.potential_owner_user_id,
+        verified='rejected'
+    )
+    storage.new(quality_check)
+    
+    # Update the match status
+    match.status = 'rejected'
+    storage.save()
+
+ 
+
+    flash('Match reject successfully', 'success')
+    return redirect(url_for('quality_bp.quality_checker'))

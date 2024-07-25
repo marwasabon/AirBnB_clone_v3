@@ -1,5 +1,6 @@
 from flask import render_template,Blueprint, request, jsonify, abort, current_app as app
 from app import db
+from app.models.item import Item
 from ..models.contact import Contact
 from ..models.user import User
 from ..models.db_storage import DBStorage, db
@@ -24,7 +25,7 @@ def index():
 
 @main.route('/landing')
 def landing_page():
-    return render_template('landing.html')
+    return render_template('landing.html', title='Landing_page')
 
 @main.route('/login', methods=['GET', 'POST'])
 def login():
@@ -35,7 +36,7 @@ def login():
         user = User.query.filter_by(username=username).first()
         if user and user.check_password(password):
             flash('You have been logged in!', 'success')
-            login_user(user)
+            login_user(user, remember=form.remember.data)
             return redirect(url_for('main.index'))
         else:
             flash('Invalid username or password')
@@ -45,6 +46,7 @@ def login():
 @login_required
 def logout():
     logout_user()
+    flash("You've Logged OUT successfully", 'success')
     return redirect(url_for('main.login'))
 
 

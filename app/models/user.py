@@ -32,6 +32,8 @@ class User(db.Model, UserMixin):
     def get_id(self):
         return str(self.id)
     
+    def has_role(self, role_name):
+        return self.role and self.role.name == role_name    
     @property
     def is_active(self):
         return True  # Example: Always return True for simplicity

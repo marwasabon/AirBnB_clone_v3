@@ -1,15 +1,55 @@
 from flask import Blueprint, request, jsonify
+
+from app.models.claim import Claim
 from ..models.item import Item 
 from ..models.user import User
 from flask import render_template,Blueprint, request, jsonify, abort
 from app import db
 from app.models.db_storage import DBStorage
 
-item_bp = Blueprint('item_bp', __name__)
+item_bp_api = Blueprint('item_bp_api', __name__)
 storage = DBStorage(db)
 
+@item_bp_api.route('/api/items', methods=['GET'])
+def get_items_with_claims():
+    items = Item.query.all()
+    item_data = []
 
-@item_bp.route('/items', methods=['POST'])
+    for item in items:
+        claim_count = db.session.query(Claim).filter(Claim.item_id == item.id).count()
+        claims = Claim.query.filter(Claim.item_id == item.id).all()
+        claims_data = [{
+            'id': claim.id,
+            'date_claimed': claim.date_claimed,
+            'additional_information': claim.additional_information,
+            'status': claim.status,
+            'user_id': claim.user_id,
+            'image_url': claim.image_url
+        } for claim in claims]
+        item_data.append({
+            'id': item.id,
+            'name': item.name,
+            'email': item.email,
+            'phone': item.phone,
+            'item_name': item.item_name,
+            'item_category': item.item_category,
+            'item_color': item.item_color,
+            'item_brand': item.item_brand,
+            'date_lost_found': item.date_lost_found,
+            'location_lost_found': item.location_lost_found,
+            'image_url': item.image_url,
+            'description': item.description,
+            'category': item.category,
+            'status': item.status,
+            'date_reported': item.date_reported,
+            'user_id': item.user_id,
+            'claims_count': claim_count,
+            'claim': claims_data
+        })
+
+    return jsonify({'items': item_data})
+
+@item_bp_api.route('/items', methods=['POST'])
 def create_item():
     data = request.get_json()
     new_item = Item(
@@ -35,7 +75,7 @@ def create_item():
         }
     }), 201
 
-@item_bp.route('/items', methods=['GET'])
+@item_bp_api.route('/items', methods=['GET'])
 def search_items():
     status = request.args.get('status')
     category = request.args.get('category')
@@ -59,12 +99,12 @@ def search_items():
             } if item.user else 'NO-user'# fix
         }for item in items])
 
-@item_bp.route('/items/<int:item_id>', methods=['GET'])
+@item_bp_api.route('/items/<int:item_id>', methods=['GET'])
 def get_item(item_id):
     item = Item.query.get_or_404(item_id)
     return jsonify({'id': item.id, 'name': item.name, 'description': item.description})
 
-@item_bp.route('/items/<int:item_id>', methods=['PUT'])
+@item_bp_api.route('/items/<int:item_id>', methods=['PUT'])
 def update_item(item_id):
     item = Item.query.get_or_404(item_id)
     data = request.get_json()
@@ -73,14 +113,14 @@ def update_item(item_id):
     storage.save()
     return jsonify({'id': item.id, 'name': item.name, 'description': item.description})
 
-@item_bp.route('/items/<int:item_id>', methods=['DELETE'])
+@item_bp_api.route('/items/<int:item_id>', methods=['DELETE'])
 def delete_item(item_id):
     item = Item.query.get_or_404(item_id)
     storage.delete(item)
     storage.save()
     return jsonify({'message': 'Item deleted'})
 
-@item_bp.route('/upload', methods=['POST'])
+@item_bp_api.route('/upload', methods=['POST'])
 def upload_file():
     """ routes when uploading images that is saved in the folder images"""
     None
