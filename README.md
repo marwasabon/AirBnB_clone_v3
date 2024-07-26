@@ -13,7 +13,7 @@ The Lost & Found Item Recovery Platform is a centralized web application designe
 
 **Authors:**  
 - Marwa Sabon (https://www.linkedin.com/in/marwa-jaberallah/) 
-- Emmanuel Nwafor SE (https://www.linkedin.com/in/co-author-linkedin-profile)  
+- Emmanuel Nwafor SE (https://www.linkedin.com/in/emmanuel-nwafor-379b131b4/)
 
 ## Installation
 
