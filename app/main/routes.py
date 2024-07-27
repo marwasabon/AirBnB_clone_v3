@@ -40,7 +40,7 @@ def login():
             return redirect(url_for('main.index'))
         else:
             flash('Invalid username or password')
-    return render_template('loginx.html', title='Log In', form=form)
+    return render_template('login.html', title='Log In', form=form)
 
 @main.route('/logout')
 @login_required
