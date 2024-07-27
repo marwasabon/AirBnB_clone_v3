@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 modal.classList.add('modal', 'fade');
                 modal.setAttribute('tabindex', '-1');
                 modal.setAttribute('role', 'dialog');
+                const hasImage = data.item_image_url && data.item_image_url.trim() !== '';
                 modal.innerHTML = `
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
@@ -28,9 +29,24 @@ document.addEventListener('DOMContentLoaded', function () {
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <img src="/images/${data.image_url}" class="img-fluid" alt="Claim Image">
+                                <img src="${data.image_url}" class="img-fluid" alt="Claim Image">
                                 <p>${data.additional_information}</p>
                             </div>
+                            ${hasImage ? `<img src="${data.item_image_url}" class="img-fluid" alt="Item Image">` : ''}
+                             <p><strong>Item Name:</strong> ${data.item_name}</p>
+                            <p><strong>Description:</strong> ${data.item_description}</p>
+                            <p><strong>Category:</strong> ${data.item_category}</p>
+                            <p><strong>Status:</strong> ${data.item_status}</p>
+                            <p><strong>Date Reported:</strong> ${data.date_reported}</p>
+                            <p><strong>User Name:</strong> ${data.user_name}</p>
+                            <p><strong>User Email:</strong> ${data.user_email}</p>
+                            <p><strong>User Phone:</strong> ${data.user_phone}</p>
+                            <p><strong>Color:</strong> ${data.item_color}</p>
+                            <p><strong>Brand:</strong> ${data.item_brand}</p>
+                            <p><strong>Date Lost/Found:</strong> ${data.date_lost_found}</p>
+                            <p><strong>Location Lost/Found:</strong> ${data.location_lost_found}</p>
+                            <p><strong>Claim Description:</strong> ${data.claim_description}</p>
+                        </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             </div>
