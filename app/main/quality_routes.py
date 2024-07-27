@@ -13,6 +13,11 @@ from app.models.db_storage import DBStorage
 quality_bp = Blueprint('quality_bp', __name__)
 storage = DBStorage(db)
 
+@quality_bp.route('/quality-checker-list', methods=['GET'])
+@login_required
+def Q_checker_list():
+    return render_template('Q_checker_list.html')
+
 @quality_bp.route('/quality-checker', methods=['GET'])
 @login_required
 def quality_checker():
