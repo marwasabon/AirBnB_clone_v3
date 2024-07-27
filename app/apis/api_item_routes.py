@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
-
-from app.models.claim import Claim
+from ..models.claim import Claim
+from ..models.match import Match
 from ..models.item import Item 
 from ..models.user import User
 from flask import render_template,Blueprint, request, jsonify, abort
@@ -17,7 +17,14 @@ def get_items_with_claims():
 
     for item in items:
         claim_count = db.session.query(Claim).filter(Claim.item_id == item.id).count()
+        match_count = db.session.query(Match).filter(Match.item_id == item.id).count()
         claims = Claim.query.filter(Claim.item_id == item.id).all()
+        matches = Match.query.filter(Match.item_id == item.id).all()
+        matches_data = [{
+            'id': match.id,
+            'status': match.status,
+           
+        } for match in matches]
         claims_data = [{
             'id': claim.id,
             'date_claimed': claim.date_claimed,
@@ -26,6 +33,7 @@ def get_items_with_claims():
             'user_id': claim.user_id,
             'image_url': claim.image_url
         } for claim in claims]
+        
         item_data.append({
             'id': item.id,
             'name': item.name,
@@ -44,7 +52,9 @@ def get_items_with_claims():
             'date_reported': item.date_reported,
             'user_id': item.user_id,
             'claims_count': claim_count,
-            'claim': claims_data
+            'match_count': match_count,
+            'claims': claims_data,
+            'matches': matches_data
         })
 
     return jsonify({'items': item_data})

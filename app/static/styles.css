@@ -1,7 +1,18 @@
 body {
     font-family: 'Roboto', sans-serif;
+    
 }
-
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-image: url('imagdes/background1.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: #e0f7fa;
+  }
+  
 .hero {
     background: url('https://source.unsplash.com/1600x900/?lost-and-found') no-repeat center center;
     background-image: url("images/magnifying_001.jpg");
@@ -153,4 +164,63 @@ body {
 .filter-sort-icon {
     text-align: right;
     margin-bottom: 20px;
+}
+
+
+/* New styling for index page */
+.search-section {
+    padding: 50px 0;
+    text-align: center;
+}
+.newsfeed-section {
+    padding: 50px 0;
+}
+.newsfeed-item {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 20px;
+    margin-bottom: 20px;
+    position: relative;
+    transition: transform 0.3s ease-in-out;
+}
+.newsfeed-item:hover {
+    transform: scale(1.05);
+}
+.newsfeed-item img {
+    max-width: 100%;
+    height: auto;
+}
+.report-date,
+.claims-count {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 3px;
+    font-size: 0.9rem;
+}
+.claims-count {
+    top: auto;
+    bottom: 10px;
+    right: 10px;
+}
+.location {
+    position: absolute;
+    top: 40px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 3px;
+    font-size: 0.9rem;
+}
+.filter-sort-icon {
+
+    margin-bottom: 20px;
+}
+.filter-sort-icon select,
+.filter-sort-icon input {
+    margin-right: 10px;
 }
