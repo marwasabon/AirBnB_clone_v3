@@ -27,7 +27,7 @@ def quality_checker():
         .paginate(page=page, per_page=per_page, error_out=False)
         
     items = {item.id: item for item, _ in items_with_claims.items}
-    matches = {item_id: Match.query.filter_by(item_id=item_id).all() for item_id in items.keys()}
+    matches = {item_id: Match.query.filter_by(item_id=item_id, status='potential').all() for item_id in items.keys()}
 
     return render_template(
         'quality_checker.html',

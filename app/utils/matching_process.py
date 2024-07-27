@@ -41,7 +41,7 @@ def find_potential_matches_for_lost_item(lost_item):
     
     for found_item in found_items:
         print(f"Checking found item: {found_item.id}")
-        if (found_item.item_category == lost_item.item_category and
+        if (found_item.item_name == lost_item.item_name and
             found_item.item_color == lost_item.item_color and
             found_item.item_brand == lost_item.item_brand and
             lost_item.description in found_item.description):
@@ -49,11 +49,20 @@ def find_potential_matches_for_lost_item(lost_item):
             potential_matches.append(found_item)
         else:
             print(f"Found item {found_item.id} does not match the lost item {lost_item.id}") 
-    
+    for match_item in potential_matches:
+        # Create a new claim
+        claim = Claim(
+            item_id=lost_item.id,  # Reference to the lost item
+            user_id=lost_item.user_id,
+            status='direct'
+        )
+        storage.new(claim)
+        storage.save()  # Save the claim to get the claim_id
     for match_item in potential_matches:
         match = Match(
-            claim_id=None,  # No claim yet, only matching lost and found items
-            item_id=match_item.id,
+            claim_id=claim.id,  # No claim yet, only matching lost and found items
+            item_id=match_item.id,# aka found item id
+            #lost_item_id=lost_item.id,  # Reference to the lost item
             potential_owner_user_id=lost_item.user_id,
             status='potential'
         )

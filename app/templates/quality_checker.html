@@ -75,9 +75,11 @@
                             <td><a href="#" class="claim-link" data-bs-toggle="modal" data-bs-target="#viewModal" data-claim-id="{{match.claim_id}}">{{ match.claim_id }}</a></td>
                             <td>
                                             <form action="/matches/{{ match.id }}/confirm" method="post" style="display:inline;">
+                                                <input type="hidden" name="page" value="{{ page }}">
                                                 <button type="submit" class="btn btn-success">Confirm</button>
                                             </form>
                                             <form action="/matches/{{ match.id }}/reject" method="post" style="display:inline;">
+                                                <input type="hidden" name="page" value="{{ page }}">
                                                 <button type="submit" class="btn btn-danger reject-claim">Reject</button>
                                             </form>
                               </td>
