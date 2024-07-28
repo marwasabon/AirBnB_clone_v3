@@ -1,6 +1,7 @@
 from flask import Blueprint, flash, redirect, render_template, request, jsonify, url_for
 from flask_login import login_required, current_user
 
+from app.models.item import Item
 from app.models.user import User
 from app.utils.send_notification import send_email
 from ..models.match import Match
@@ -55,6 +56,11 @@ def confirm_match(match_id):
     
     # Update the match status
     match.status = 'confirmed'
+    # Update the mainn item's status to 'closed'
+    item = Item.query.get(match.item_id)
+    if item:
+        item.status = 'closed'
+        storage.new(item)
     storage.save()
 
    # Send confirmation email to the user

@@ -33,6 +33,13 @@ def upload_item():
             filename = secure_filename(file.filename)
             file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
             file.save(file_path)
+            # status based on user role
+            if current_user.has_role('USER'):
+                item_status = 'pending'
+            elif current_user.has_role('admin'):
+                item_status = 'Found'
+            else:
+                item_status = form.status.data  
 
             new_item = Item(
                 name=form.name.data,
@@ -45,7 +52,7 @@ def upload_item():
                 date_lost_found=form.date_lost_found.data,
                 location_lost_found=form.location_lost_found.data,
                 description=form.description.data,
-                status=form.status.data,
+                status=item_status,
                 image_url=file_path,
                 user_id=current_user.id
             )
@@ -147,6 +154,14 @@ def uploaded_file(filename):
 def item_detail(item_id):
     item = Item.query.get_or_404(item_id)
     return render_template('item_details.html', item=item)
+
+@item_bp.route('/items_pending', methods=['GET'])
+#admin page
+def list_items_admin():
+    page = request.args.get('page', 1, type=int)
+    items_per_page = 10   
+    items = Item.query.filter_by(status='pending').paginate(page=page, per_page=items_per_page)
+    return render_template('list_items.html', items_pagination=items)
 
 @item_bp.route('/items', methods=['GET'])
 def search_items():
