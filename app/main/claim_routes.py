@@ -1,9 +1,12 @@
-from flask import Blueprint, request, jsonify
+import os
+from flask import Blueprint, request, jsonify, url_for
 from ..models.claim import Claim 
 from flask import render_template,Blueprint, request, jsonify, abort
 from app import db
 from app.models.db_storage import DBStorage
 from flask_login import login_required, current_user
+from flask import render_template,Blueprint, request, jsonify, abort, current_app as app
+
 from ..utils.matching_process import *
 claim_bp = Blueprint('claim_bp', __name__)
 storage = DBStorage(db)
@@ -52,8 +55,28 @@ def delete_claim(claim_id):
 @login_required
 def get_claim(claim_id):
     claim = Claim.query.get_or_404(claim_id)
+    item = Item.query.get_or_404(claim.item_id)
+    def get_filename(path):
+        return os.path.basename(path)
+    item_image_url = url_for('uploaded_file', filename=get_filename(item.image_url)) if item.image_url else url_for('static', filename='default-item-image.jpg')
     return jsonify({
         'claim_id': claim.id,
         'image_url': claim.image_url,
-        'additional_information': claim.additional_information
+        'claim_id': claim.id,
+        'claim_description': claim.additional_information,
+        'item_id': item.id,
+        'item_description': item.description,
+        'item_category': item.item_category,
+        'item_status': item.status,
+        'date_reported': item.date_reported,
+        'user_id': claim.user_id,
+        'item_image_url': item_image_url,
+        'user_name': item.user.username if item.user.username else '',
+        'user_email': item.email if item.email else '',
+        'user_phone': item.phone if item.phone else '',
+        'item_name': item.item_name,
+        'item_color': item.item_color,
+        'item_brand': item.item_brand,
+        'date_lost_found': item.date_lost_found,
+        'location_lost_found': item.location_lost_found
     })
