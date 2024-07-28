@@ -55,7 +55,7 @@ def quality_checker2():
 
 @quality_bp.route('/quality-checker/<int:item_id>', methods=['GET'])
 @login_required
-def quality_checker(item_id):
+def quality_checker3(item_id):
     # Fetch the item with the given item_id
     item = Item.query.get_or_404(item_id)
     

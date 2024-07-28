@@ -104,7 +104,7 @@ $(document).ready(function() {
 
     function loadItems(searchQuery = '', filters = {}) {
         $.ajax({
-            url: apiUrl,
+            url: '/api/items',
             method: 'GET',
             success: function(response) {
                 const items = response.items;
