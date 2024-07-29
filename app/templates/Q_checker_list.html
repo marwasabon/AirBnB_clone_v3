@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
-{% block title %}All Items{% endblock %}
+{% block title %}Quality Checker{% endblock %}
 {% block content %}
+
 <div class="container-fluid">
     <div class="row">
         <!-- Aside Section -->
@@ -45,7 +46,7 @@
                     <thead>
                         <tr>
                             <th>S/N</th>
-                            <th>ID</th>
+                            <th>Item_ID</th>
                             <th>Image</th>
                             <th>Name</th>
                             <th>Category</th>
@@ -104,7 +105,7 @@ $(document).ready(function() {
 
     function loadItems(searchQuery = '', filters = {}) {
         $.ajax({
-            url: '/api/items',
+            url: apiUrl,
             method: 'GET',
             success: function(response) {
                 const items = response.items;
@@ -133,7 +134,7 @@ $(document).ready(function() {
 
                 // Apply status and claims filters
                 filteredItems = filteredItems.filter(item => 
-                    item.status === 'found' && 
+                    item.status === 'Found' && 
                     item.claims_count > 0 && 
                     !item.matches.some(match => match.status === 'confirmed')
                 );
@@ -163,6 +164,10 @@ $(document).ready(function() {
                     `;
                     $('#items-table-body').append(itemHtml);
                 });
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error('Failed to load items:', textStatus, errorThrown);
+                alert('Failed to load items. Please try again later.');
             }
         });
     }
@@ -188,17 +193,15 @@ $(document).ready(function() {
     });
 });
 </script>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-{% endblock %}
+
+{% endblock content %}
+ <!-- Footer -->
+ <footer class="footer bg-light py-3">
+    <div class="container text-center">
+        <p>
+            <strong>Lost & Found</strong> by <a href="#">Your Company</a>. © 2024 All rights reserved.
+        </p>
+    </div>
+</footer>
+</body>
+</html>

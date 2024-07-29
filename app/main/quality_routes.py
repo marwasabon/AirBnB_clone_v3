@@ -69,13 +69,13 @@ def quality_checker3(item_id):
     claims = Claim.query.filter(Claim.id.in_(claim_ids)).all()
     
     # Create a list of matches with relevant attributes
-    '''matches_data = [
+    matches_data = [
         {
             'match_id': match.id,
             'claim_id': match.claim_id,
             'claim_description': next((claim.additional_information for claim in claims if claim.id == match.claim_id), None)
         }
         for match in matches
-    ]'''
+    ]
     
-    return render_template('q_checker.html', item=item, claims=claims)
+    return render_template('q_checker.html', item=item, claims=claims, matches=matches_data)

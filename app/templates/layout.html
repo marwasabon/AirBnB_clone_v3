@@ -22,7 +22,22 @@
 
     <!-- Manual stylesheet-->
     <link rel="stylesheet" type="text/css" href="../static/styles.css">
-    <style>{% block styling %}{% endblock %}</style>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        .content-wrapper {
+            flex: 1;
+        }
+        footer {
+            position: sticky;
+            top: 100vh; /* Pushes the footer to the bottom of the viewport */
+            z-index: 10;
+        }
+    {% block styling %}{% endblock %}</style>
 </head>
 <body>
    
@@ -45,7 +60,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('main.landing_page') }}">Home</a>
+                        <a class="nav-link" href="{{ url_for('main.index') }}">Home</a>
                     </li>
                     {% if current_user.is_authenticated and current_user.has_role('User') %}
                     <li class="nav-item">
@@ -64,7 +79,7 @@
                         <a class="nav-link" href="{{ url_for('item_bp.upload_item') }}">Create Request</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('item_bp.upload_item') }}">Quality Checker</a>
+                        <a class="nav-link" href="{{ url_for('quality_bp.Q_list') }}">Quality Checker</a>
                     </li>
                     {% if title not in ('Landing_page', 'Log In') %}
                     <li class="nav-item">
