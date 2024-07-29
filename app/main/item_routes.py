@@ -150,7 +150,7 @@ def uploaded_file(filename):
     return send_from_directory(current_app.config['UPLOAD_FOLDER'], filename)
 
 
-@item_bp.route('/<int:item_id>')
+@item_bp.route('/item/<int:item_id>')
 def item_detail(item_id):
     item = Item.query.get_or_404(item_id)
     return render_template('item_details.html', item=item)
@@ -162,6 +162,25 @@ def list_items_admin():
     items_per_page = 10   
     items = Item.query.filter_by(status='pending').paginate(page=page, per_page=items_per_page)
     return render_template('list_items.html', items_pagination=items)
+
+@item_bp.route('/items/confirm_item', methods=['POST'])
+def confirm_item():
+    item_id = request.form.get('item_id')
+    print("item_id",item_id)
+    item = Item.query.get_or_404(item_id)
+    item.status = 'Found'
+    storage.save()
+    flash('Item status updated to "found".', 'success')
+    return redirect(url_for('item_bp.item_detail', item_id=item.id))
+
+@item_bp.route('/items/delete_item', methods=['POST'])
+def delete_item():
+    item_id = request.form.get('item_id')
+    item = Item.query.get_or_404(item_id)
+    storage.delete(item)
+    storage.save()
+    flash('Item successfully deleted.', 'success')
+    return redirect(url_for('item_bp.list_items'))
 
 @item_bp.route('/items', methods=['GET'])
 def search_items():
@@ -202,7 +221,7 @@ def update_item(item_id):
     return jsonify({'id': item.id, 'name': item.name, 'description': item.description})
 
 @item_bp.route('/items/<int:item_id>', methods=['DELETE'])
-def delete_item(item_id):
+def delete_item_api(item_id):
     item = Item.query.get_or_404(item_id)
     storage.delete(item)
     storage.save()
