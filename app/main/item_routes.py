@@ -34,9 +34,9 @@ def upload_item():
             file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
             file.save(file_path)
             # status based on user role
-            if current_user.has_role('USER'):
+            if current_user.has_role('USER') and form.status.data  == 'Found':
                 item_status = 'pending'
-            elif current_user.has_role('admin'):
+            elif current_user.has_role('admin') and form.status.data  == 'Found':
                 item_status = 'Found'
             else:
                 item_status = form.status.data  
@@ -58,31 +58,13 @@ def upload_item():
             )
             storage.new(new_item)
             storage.save()
-            potential_matches = find_potential_matches_for_lost_item(new_item)
+            
+            if new_item.status == 'Lost':
+                print("new_item",new_item.status)
+                potential_matches = find_potential_matches_for_lost_item(new_item)
             flash('Item uploaded successfully!', 'success')
             return redirect(url_for('item_bp.list_items'))
     return render_template('upload_item.html', form=form)
-    '''form = ItemUploadForm()
-    if form.validate_on_submit():
-        file = form.image.data
-        if file:
-            filename = secure_filename(file.filename)
-            file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
-            file.save(file_path)
-
-            new_item = Item(
-                name=form.name.data,
-                description=form.description.data,
-                category=form.category.data,
-                status=form.status.data,
-                image_url=file_path,
-                user_id=current_user.id
-            )
-            storage.new(new_item)
-            storage.save()
-            flash('Item uploaded successfully!', 'success')
-            return redirect(url_for('item_bp.list_items'))
-    return render_template('upload_item.html', form=form)'''
 
 @item_bp.route('/items', methods=['GET'])
 def list_items():
