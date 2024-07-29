@@ -29,4 +29,8 @@ def downgrade():
     with op.batch_alter_table('contacts', schema=None) as batch_op:
         batch_op.drop_column('status')
 
+<<<<<<< HEAD
     # ### end Alembic commands ###
+=======
+    # ### end Alembic commands ###
+>>>>>>> main

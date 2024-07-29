@@ -21,7 +21,7 @@ def home():
 
 @main.route('/index')
 def index():
-    return render_template('index.html')
+    return render_template('indexx.html')
 
 @main.route('/landing')
 def landing_page():
