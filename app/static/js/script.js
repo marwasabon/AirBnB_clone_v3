@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                                     <img src="${data.image_url}" class="img-fluid" alt="Claim Image">
                                 `}
-                            <p><strong>status :</strong> ${data.status || 'Not Available'}</p>
+                            <p><strong>Claim status :</strong> ${data.status || 'Not Available'}</p>
                             <p><strong>Claim additional information:</strong> ${data.additional_information ? data.additional_information : 'Not Available'}</p>
 
                             <p><strong>Item Name:</strong> ${data.item_name || 'Not Available'}</p>
