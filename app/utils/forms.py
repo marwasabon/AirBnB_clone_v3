@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SelectField, TextAreaField, FileField , SubmitField, BooleanField, DateField
+from wtforms import EmailField, StringField, PasswordField, SelectField, TextAreaField, FileField , SubmitField, BooleanField, DateField
 from wtforms.validators import DataRequired, Email,Length, EqualTo, ValidationError
 from ..models.user import User 
 from flask_login import login_required, current_user
@@ -21,7 +21,8 @@ class ItemUploadForm(FlaskForm):
     item_brand = StringField('Item Brand')
     date_lost_found = DateField('Date Lost/Found', validators=[DataRequired()])
     location_lost_found = StringField('Location Lost/Found', validators=[DataRequired()])
-    image = FileField('Item Image', validators=[FileAllowed(['jpg', 'png'], 'Images only!')])
+
+    image = FileField('Item Image', validators=[FileAllowed(['jpg', 'png'], 'Images only!'), DataRequired()])
     description = TextAreaField('Description', validators=[DataRequired()])
     #category = SelectField('Category', choices=[('Lost', 'Lost'), ('Found', 'Found')], validators=[DataRequired()])
     status = SelectField('Status', choices=[('Lost', 'Lost'), ('Found', 'Found')], validators=[DataRequired()])
@@ -71,3 +72,8 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     remember = BooleanField('Remember Me')
     submit = SubmitField('Login')
+    
+class ResetPasswordForm(FlaskForm):
+    password = PasswordField('New Password', validators=[DataRequired()])
+    submit = SubmitField('Submit')
+    
