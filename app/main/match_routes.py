@@ -31,11 +31,11 @@ def confirm_match(match_id):
     page = request.form.get('page', 1, type=int)
     if not match:
         flash('Match not found', 'danger')
-        return redirect(url_for('quality_bp.quality_checker', page=page))
+        return redirect(url_for('quality_bp.Q_list', page=page))
 
     if current_user.role.name != 'QualityChecker':
         flash('Unauthorized access', 'danger')
-        return redirect(url_for('quality_bp.quality_checker', page=page))
+        return redirect(url_for('quality_bp.Q_list', page=page))
    # Check if the user has already confirmed a match for this item
     existing_confirmed_match = QualityCheck.query.filter_by(
         quality_checker_user_id=current_user.id,
@@ -44,7 +44,7 @@ def confirm_match(match_id):
     ).first()
     if existing_confirmed_match:
         flash('You have already confirmed a match for this item.', 'danger')
-        return redirect(url_for('quality_bp.quality_checker', page=page))
+        return redirect(url_for('quality_bp.Q_list', page=page))
     # Create a new QualityCheck record,
     quality_check = QualityCheck(
         match_id=match.id,
@@ -63,7 +63,7 @@ def confirm_match(match_id):
         storage.new(item)
     storage.save()
     flash('Match confirmed successfully', 'success')
-    return redirect(url_for('quality_bp.quality_checker'))
+    return redirect(url_for('quality_bp.Q_list'))
    # Send confirmation email to the user
     user = User.query.get(match.potential_owner_user_id)
     if user:
@@ -84,11 +84,11 @@ def reject_match(match_id):
     page = request.form.get('page', 1, type=int)
     if not match:
         flash('Match not found', 'danger')
-        return redirect(url_for('quality_bp.quality_checker'))
+        return redirect(url_for('quality_bp.Q_list'))
 
     if current_user.role.name != 'QualityChecker':
         flash('Unauthorized access', 'danger')
-        return redirect(url_for('quality_bp.quality_checker', page=page))
+        return redirect(url_for('quality_bp.Q_list', page=page))
         #    # Check if the user has already confirmed a match for this item
         #     existing_confirmed_match = QualityCheck.query.filter_by(
         #         quality_checker_user_id=current_user.id,
@@ -114,4 +114,4 @@ def reject_match(match_id):
  
 
     flash('Match reject successfully', 'success')
-    return redirect(url_for('quality_bp.quality_checker'))
+    return redirect(url_for('quality_bp.Q_list'))

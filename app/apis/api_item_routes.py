@@ -1,4 +1,5 @@
-from flask import Blueprint, request, jsonify
+import os
+from flask import Blueprint, request, jsonify, url_for
 from ..models.claim import Claim
 from ..models.match import Match
 from ..models.item import Item 
@@ -12,9 +13,11 @@ storage = DBStorage(db)
 
 @item_bp_api.route('/api/items', methods=['GET'])
 def get_items_with_claims():
+    
     items = Item.query.all()
     item_data = []
-
+    def get_filename(path):
+        return os.path.basename(path)
     for item in items:
         claim_count = db.session.query(Claim).filter(Claim.item_id == item.id).count()
         match_count = db.session.query(Match).filter(Match.item_id == item.id).count()
@@ -33,7 +36,8 @@ def get_items_with_claims():
             'user_id': claim.user_id,
             'image_url': claim.image_url
         } for claim in claims]
-        
+        image_url = url_for('uploaded_file', filename=get_filename(item.image_url)) if item.image_url else url_for('static', filename='default-item-image.jpg')
+
         item_data.append({
             'id': item.id,
             'name': item.name,
@@ -45,7 +49,7 @@ def get_items_with_claims():
             'item_brand': item.item_brand,
             'date_lost_found': item.date_lost_found,
             'location_lost_found': item.location_lost_found,
-            'image_url': item.image_url,
+            'image_url': image_url,
             'description': item.description,
             'category': item.category,
             'status': item.status,

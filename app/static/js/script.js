@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function () {
 $(document).ready(function() {
     function loadItems(searchQuery = '', filters = {}) {
         $.ajax({
-            url: 'http://127.0.0.1:5000/api/items',
+            url: 'http://192.168.56.1:5000/api/items',
             method: 'GET',
             success: function(response) {
                 const items = response.items;
@@ -151,6 +151,7 @@ $(document).ready(function() {
                     const itemHtml = `
                         <div class="col-md-4">
                             <div class="newsfeed-item" data-id="${item.id}">
+ 
                                 <img src="${item.image_url}" alt="Item Image">
                                 <div class="report-date">Reported: ${daysAgo} days ago</div>
                                 <div class="location">${item.location_lost_found}</div>

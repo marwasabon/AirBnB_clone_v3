@@ -122,7 +122,9 @@
             <div class="card text-center mb-4">
                 {% if item.image_url %}
                 <div class="d-flex justify-content-center align-items-center" style="height: 100%;">
-                    <img src="{{ url_for('static', filename=item.image_url) }}" class="img-fluid" alt="Item Image" style="max-width: 200px;">
+                    <img src="{{ url_for('uploaded_file', filename=item.image_url|get_filename) }}" alt="Item Image" style="max-width: 200px;">         
+         
+                    
                 </div>
                 {% endif %}
                 <div class="card-body d-flex flex-column justify-content-center align-items-center text-center">
@@ -162,20 +164,24 @@
                         {% for match in matches %}
                         <tr>
                             <th scope="row">{{ loop.index }}</th>
-                            <th scope="row">{{ match.claim_id }}</th>
-                            <td><a href="#" class="claim-link" data-claim-id="{{ match.claim_id }}">{{ match.claim_description }}</a></td>
+                            <th scope="row">{{ match.match_id }}</th>
+                            <td><a href="#" class="claim-link" data-claim-id="{{ match.match_id }}">{{ match.claim_description }}</a></td>
                             <td>
-                                <button class="btn btn-danger reject-claim" data-claim-id="{{ match.claim_id }}">Reject</button>
-                                <button class="btn btn-success confirm-claim" data-claim-id="{{ match.claim_id }}">Confirm</button>
+                                <form action="/matches/{{ match.match_id }}/confirm" method="post" style="display:inline;">
+                                    <input type="hidden" name="page" value="{{ page }}">
+                                    <button type="submit" class="btn btn-success">Confirm</button>
+                                </form>
+                                <form action="/matches/{{ match.match_id }}/reject" method="post" style="display:inline;">
+                                    <input type="hidden" name="page" value="{{ page }}">
+                                    <button type="submit" class="btn btn-danger reject-claim">Reject</button>
+                                </form>
                             </td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
-            <div class="text-end">
-                <button class="btn btn-success">Merge Successful Claim</button>
-            </div>
+           
         </div>
     </div>
 </div>
@@ -205,50 +211,7 @@
         const rejectButtons = document.querySelectorAll('.reject-claim');
         const confirmButtons = document.querySelectorAll('.confirm-claim');
 
-        rejectButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const claimId = button.getAttribute('data-claim-id');
-                if (confirm('Are you sure you want to reject this claim?')) {
-                    fetch(`/matches/${claimId}/reject`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ status: 'rejected' })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        alert('Claim rejected successfully');
-                        // Optionally, remove the row from the table or update the UI
-                        button.closest('tr').remove();
-                    })
-                    .catch(error => console.error('Error:', error));
-                }
-            });
-        });
-
-        confirmButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const claimId = button.getAttribute('data-claim-id');
-                if (confirm('Are you sure you want to confirm this claim?')) {
-                    fetch(`/matches/${claimId}/confirm`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ status: 'confirmed' })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        alert('Claim confirmed successfully');
-                        // Optionally, remove the row from the table or update the UI
-                        button.closest('tr').remove();
-                    })
-                    .catch(error => console.error('Error:', error));
-                }
-            });
-        });
-    });
+        
 </script>
 
 

@@ -44,7 +44,9 @@
    
          <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
     
     <!-- Header + navigation links-->
     <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-header">
@@ -63,11 +65,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('main.index') }}">Home</a>
                     </li>
-                    {% if current_user.is_authenticated and current_user.has_role('User') %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('user_bp.register') }}">Marwa</a>
-                    </li>
-                    {% endif %}
+                    
                     {% if title == 'Landing_page' %}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('user_bp.register') }}">Sign-up</a>
@@ -77,11 +75,17 @@
                     </li>
                     {% else %}
                     <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('item_bp.list_items') }}">Items</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('item_bp.upload_item') }}">Create Request</a>
                     </li>
+                    {% if current_user.is_authenticated and current_user.has_role('admin') %}
+
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('quality_bp.Q_list') }}">Quality Checker</a>
                     </li>
+                    {% endif %}
                     {% if title not in ('Landing_page', 'Log In') %}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('main.logout') }}">Log Out</a>
