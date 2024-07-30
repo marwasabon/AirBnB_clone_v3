@@ -165,8 +165,8 @@
                             <th scope="row">{{ match.claim_id }}</th>
                             <td><a href="#" class="claim-link" data-claim-id="{{ match.claim_id }}">{{ match.claim_description }}</a></td>
                             <td>
-                                <button class="btn btn-danger reject-claim" data-claim-id="{{ match.claim_id }}">Reject</button>
-                                <button class="btn btn-success confirm-claim" data-claim-id="{{ match.claim_id }}">Confirm</button>
+                                <button class="btn btn-danger reject-claim" data-claim-id="{{ match.match_id }}">Reject</button>
+                                <button class="btn btn-success confirm-claim" data-claim-id="{{ match.match_id }}">Confirm</button>
                             </td>
                         </tr>
                         {% endfor %}
