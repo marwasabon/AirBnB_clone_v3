@@ -18,7 +18,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 modal.classList.add('modal', 'fade');
                 modal.setAttribute('tabindex', '-1');
                 modal.setAttribute('role', 'dialog');
-                const hasImage = data.item_image_url && data.item_image_url.trim() !== '';
+                                 
+                // Determine if there is an item image
+                const hasItemImage = data.item_image_url && data.item_image_url.trim() !== '';
+
+                // Modal content based on image availability
                 modal.innerHTML = `
                 <div class="modal fade" id="claimModal" tabindex="-1" role="dialog" aria-labelledby="claimModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
@@ -30,28 +34,40 @@ document.addEventListener('DOMContentLoaded', function () {
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <img src="${data.image_url}" class="img-fluid" alt="Claim Image">
-                                <p>${data.additional_information}</p>
+
+                                ${hasItemImage ? `
+                                    <p><strong>ITEM IMAGE :</strong></p>
+                                    <img src="${data.item_image_url}" class="img-fluid" alt="Item Image">
+                                ` : `
+                                    <p><strong>CLAIM IMAGE :</strong></p>
+
+                                    <img src="${data.image_url}" class="img-fluid" alt="Claim Image">
+                                `}
+                            <p><strong>Claim status :</strong> ${data.status || 'Not Available'}</p>
+                            <p><strong>Claim additional information:</strong> ${data.additional_information ? data.additional_information : 'Not Available'}</p>
+
+                            <p><strong>Item Name:</strong> ${data.item_name || 'Not Available'}</p>
+                            <p><strong>Description:</strong> ${data.item_description || 'Not Available'}</p>
+                            <p><strong>Category:</strong> ${data.item_category || 'Not Available'}</p>
+                            <p><strong>Status:</strong> ${data.item_status || 'Not Available'}</p>
+                            <p><strong>Date Reported:</strong> ${data.date_reported || 'Not Available'}</p>
+                            <p><strong>User Name:</strong> ${data.user_name || 'Not Available'}</p>
+                            <p><strong>User Email:</strong> ${data.user_email || 'Not Available'}</p>
+                            <p><strong>User Phone:</strong> ${data.user_phone || 'Not Available'}</p>
+                            <p><strong>Color:</strong> ${data.item_color || 'Not Available'}</p>
+                            <p><strong>Brand:</strong> ${data.item_brand || 'Not Available'}</p>
+                            <p><strong>Date Lost/Found:</strong> ${data.date_lost_found || 'Not Available'}</p>
+                            <p><strong>Location Lost/Found:</strong> ${data.location_lost_found || 'Not Available'}</p>
+                              </div>
                             </div>
-                            
-                            <p><strong>Claim Description:</strong> ${data.claim_description}</p>
-                            <p><strong>Description:</strong> ${data.item_description}</p>
-                            <p><strong>User Name:</strong> ${data.user_name}</p>
-                            <p><strong>User Email:</strong> ${data.user_email}</p>
-                            <p><strong>User Phone:</strong> ${data.user_phone}</p>
-                            <p><strong>Color:</strong> ${data.item_color}</p>
-                            <p><strong>Brand:</strong> ${data.item_brand}</p>
-                            <p><strong>Brand:</strong> ${data.item_brand}</p>
-                            <p><strong>Date Lost/Found:</strong> ${data.date_lost_found}</p>
-                            <p><strong>Location Lost/Found:</strong> ${data.location_lost_found}</p>
-                            
-                        </div>
+ 
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             </div>
                         </div>
                     </div>
                 `;
+                
                 document.body.appendChild(modal);
                 const bootstrapModal = new bootstrap.Modal(modal);
                 bootstrapModal.show();

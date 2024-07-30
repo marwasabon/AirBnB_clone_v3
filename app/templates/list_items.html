@@ -10,7 +10,7 @@
                 <th>ID</th>
                 <th>Image</th>
                 <th>Description</th>
-                <th>Category</th>
+                <th>Status</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -23,7 +23,7 @@
                     <img src="{{ url_for('uploaded_file', filename=item.image_url|get_filename) }}" alt="Item Image" width="100">                    {% endif %}
                 </td>
                 <td>{{ item.description }}</td>
-                <td>{{ item.category }}</td>
+                <td>{{ item.status }}</td>
                
                 <td>
                      <a href="{{ url_for('item_bp.item_detail', item_id=item.id) }}" class="btn btn-info">Item Details</a>

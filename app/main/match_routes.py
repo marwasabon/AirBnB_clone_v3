@@ -1,6 +1,7 @@
 from flask import Blueprint, flash, redirect, render_template, request, jsonify, url_for
 from flask_login import login_required, current_user
 
+from app.models.item import Item
 from app.models.user import User
 from app.utils.send_notification import send_email
 from ..models.match import Match
@@ -55,8 +56,14 @@ def confirm_match(match_id):
     
     # Update the match status
     match.status = 'confirmed'
+    # Update the mainn item's status to 'closed'
+    item = Item.query.get(match.item_id)
+    if item:
+        item.status = 'Closed'
+        storage.new(item)
     storage.save()
-
+    flash('Match confirmed successfully', 'success')
+    return redirect(url_for('quality_bp.quality_checker'))
    # Send confirmation email to the user
     user = User.query.get(match.potential_owner_user_id)
     if user:
@@ -66,8 +73,7 @@ def confirm_match(match_id):
         html_body = render_template('match_confirmation.html', user=user, match=match)
         send_email(subject, recipients, text_body, html_body)
 
-    flash('Match confirmed successfully', 'success')
-    return redirect(url_for('quality_bp.quality_checker'))
+
 
 
 # reject match
@@ -82,17 +88,17 @@ def reject_match(match_id):
 
     if current_user.role.name != 'QualityChecker':
         flash('Unauthorized access', 'danger')
-    return redirect(url_for('quality_bp.quality_checker', page=page))
-#    # Check if the user has already confirmed a match for this item
-#     existing_confirmed_match = QualityCheck.query.filter_by(
-#         quality_checker_user_id=current_user.id,
-#         match_id=match.id,
-#         verified='rejected'
-#     ).first()
-#     if existing_confirmed_match:
-#         flash('You have already rejected a match for this item.', 'danger')
-#         return redirect(url_for('quality_bp.quality_checker'))
-    # Create a new QualityCheck record
+        return redirect(url_for('quality_bp.quality_checker', page=page))
+        #    # Check if the user has already confirmed a match for this item
+        #     existing_confirmed_match = QualityCheck.query.filter_by(
+        #         quality_checker_user_id=current_user.id,
+        #         match_id=match.id,
+        #         verified='rejected'
+        #     ).first()
+        #     if existing_confirmed_match:
+        #         flash('You have already rejected a match for this item.', 'danger')
+        #         return redirect(url_for('quality_bp.quality_checker'))
+        # Create a new QualityCheck record
     quality_check = QualityCheck(
         match_id=match.id,
         quality_checker_user_id=current_user.id,
