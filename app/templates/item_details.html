@@ -25,7 +25,7 @@
                     <p><strong>User:</strong> {{ item.user.username }} (Email: {{ item.user.email }}, Phone: {{ item.phone }})</p>
                     <p><strong>Description:</strong> {{ item.description }}</p>
                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#claimModal" data-item-id="{{ item.id }}">Claim</button>
-                    {% if current_user.is_authenticated and current_user.has_role('admin') %}
+                    {% if current_user.is_authenticated and current_user.has_role('ADMIN',) or current_user.has_role('QualityChecker',) %}
 
                     <button class="btn btn-warning ms-2" data-bs-toggle="modal" data-bs-target="#confirmModal" data-item-id="{{ item.id }}">Confirm</button>
                     <button class="btn btn-danger ms-2" data-bs-toggle="modal" data-bs-target="#deleteModal" data-item-id="{{ item.id }}">Delete</button>

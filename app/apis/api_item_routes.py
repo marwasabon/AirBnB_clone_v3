@@ -14,7 +14,8 @@ storage = DBStorage(db)
 @item_bp_api.route('/api/items', methods=['GET'])
 def get_items_with_claims():
     
-    items = Item.query.all()
+    #items = Item.query.all()
+    items = Item.query.filter_by(status='Found').all()
     item_data = []
     def get_filename(path):
         return os.path.basename(path)

@@ -75,12 +75,15 @@
                     </li>
                     {% else %}
                     <li class="nav-item">
+                        {% if current_user.is_authenticated and (current_user.has_role('ADMIN') or current_user.has_role('QualityChecker')) %}
+
                         <a class="nav-link" href="{{ url_for('item_bp.list_items') }}">Items</a>
+                        {% endif %}
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('item_bp.upload_item') }}">Create Request</a>
                     </li>
-                    {% if current_user.is_authenticated and current_user.has_role('admin') %}
+                    {% if current_user.is_authenticated and (current_user.has_role('ADMIN') or current_user.has_role('QualityChecker')) %}
 
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('quality_bp.Q_list') }}">Quality Checker</a>
