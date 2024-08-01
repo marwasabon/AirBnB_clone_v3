@@ -19,7 +19,7 @@ class Item(db.Model):
     image_url = Column(String(255), nullable=True)  
     description = Column(String(255), nullable=False)  
     category = Column(String(50), nullable=True)  
-    status = Column(Enum('Lost', 'Found', 'Report', name='status_types'), nullable=False, default='Lost')  
+    status = Column(Enum('Lost', 'Found', 'Report', 'Closed',name='status_types'), nullable=False, default='Lost')  
     date_reported = Column(DateTime, default=datetime.utcnow)  
     user_id = Column(Integer, ForeignKey('users.id'))  
     user = relationship('User', back_populates='items')  

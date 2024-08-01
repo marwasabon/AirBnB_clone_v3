@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SelectField, TextAreaField, FileField , SubmitField, BooleanField, DateField
+from wtforms import EmailField, StringField, PasswordField, SelectField, TextAreaField, FileField , SubmitField, BooleanField, DateField
 from wtforms.validators import DataRequired, Email,Length, EqualTo, ValidationError
 from ..models.user import User 
 from flask_login import login_required, current_user
@@ -72,3 +72,8 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     remember = BooleanField('Remember Me')
     submit = SubmitField('Login')
+    
+class ResetPasswordForm(FlaskForm):
+    password = PasswordField('New Password', validators=[DataRequired()])
+    submit = SubmitField('Submit')
+    

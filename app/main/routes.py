@@ -21,7 +21,7 @@ def home():
 
 @main.route('/index')
 def index():
-    return render_template('index.html')
+    return render_template('indexx.html')
 
 @main.route('/landing')
 def landing_page():
@@ -39,7 +39,7 @@ def login():
             login_user(user, remember=form.remember.data)
             return redirect(url_for('main.index'))
         else:
-            flash('Invalid username or password')
+            flash('Invalid username or password', 'danger')
     return render_template('login.html', title='Log In', form=form)
 
 @main.route('/logout')

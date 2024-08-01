@@ -164,6 +164,7 @@ def forgot_password():
     
 @user_bp.route('/reset_password/<token>', methods=['GET', 'POST'])
 def reset_password(token):
+    form = ResetPasswordForm()  # Instantiate your form here
     print(f"Received token: {token}")  # Debug: Print the received token
     s = get_serializer()
     try:
@@ -182,5 +183,5 @@ def reset_password(token):
         flash('Your password has been updated!', 'success')
         return redirect(url_for('main.login'))
 
-    return render_template('reset_password.html', token=token)
+    return render_template('reset_password.html',form=form, token=token)
 
