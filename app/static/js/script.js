@@ -81,6 +81,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
+// keeps the navbar fixed at the top when scrolling up, but disappear when scrolling down.
 document.addEventListener('DOMContentLoaded', function () {
     const header = document.querySelector('.fixed-header');
     let lastScrollTop = 0;
@@ -98,10 +99,11 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
+// logic to populate the newsfeed, and search/filter algorithm
 $(document).ready(function() {
     function loadItems(searchQuery = '', filters = {}) {
         $.ajax({
-            url: 'http://192.168.56.1:5000/api/items',
+            url: 'http://127.0.0.1:5000/api/items',
             method: 'GET',
             success: function(response) {
                 const items = response.items;
