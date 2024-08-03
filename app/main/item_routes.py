@@ -35,8 +35,8 @@ def upload_item():
             file.save(file_path)
             # status based on user role
             if current_user.has_role('USER') and form.status.data  == 'Found':
-                item_status = 'pending'
-            elif current_user.has_role('admin') and form.status.data  == 'Found':
+                item_status = 'Report'
+            elif current_user.has_role('ADMIN') and form.status.data  == 'Found':
                 item_status = 'Found'
             else:
                 item_status = form.status.data  
@@ -65,7 +65,7 @@ def upload_item():
             flash('Item uploaded successfully!', 'success')
             return redirect(url_for('item_bp.list_items'))
     return render_template('upload_item.html', form=form)
-
+@login_required
 @item_bp.route('/items', methods=['GET'])
 def list_items():
     page = request.args.get('page', 1, type=int)  

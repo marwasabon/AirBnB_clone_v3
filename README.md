@@ -9,7 +9,7 @@
 The Lost & Found Item Recovery Platform is a centralized web application designed to streamline the process of reporting lost items, searching for found items, and facilitating their return to the rightful owners. This project aims to enhance community trust and cooperation, ensuring that lost belongings can be recovered efficiently. 
 
 [Deployed Site Link](https://www.marwasabon.tech)  
-[Final Project Blog Article](https://your-blog-article-link.com)  
+[Final Project Blog Article]:https://medium.com/@marwaasabon/lost-and-found-your-web-portal-for-tracking-lost-items-and-matching-them-with-their-owners-045c1ac7db0b
 
 **Authors:**  
 - Marwa Sabon (https://www.linkedin.com/in/marwa-jaberallah/) 

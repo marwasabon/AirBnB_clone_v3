@@ -14,7 +14,7 @@ html, body {
   }
   
 .hero {
-    background: url('https://source.unsplash.com/1600x900/?lost-and-found') no-repeat center center;
+    /*background: url('https://source.unsplash.com/1600x900/?lost-and-found') no-repeat center center;*/
     background-image: url("images/magnifying_001.jpg");
     background-repeat: no-repeat;
     background-size: cover;
@@ -223,4 +223,17 @@ html, body {
 .filter-sort-icon select,
 .filter-sort-icon input {
     margin-right: 10px;
+}
+
+.hero {
+    /*background: url('https://source.unsplash.com/1600x900/?lost-and-found') no-repeat center center;*/
+    background-image: url("images/magnifying_001.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    color: white;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
 }
