@@ -23,15 +23,8 @@
     <!-- Manual stylesheet-->
     <link rel="stylesheet" type="text/css" href="../static/styles.css">
     <style>
-        html, body {
-            height: 100%;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-        }
-        .content-wrapper {
-            flex: 1;
-        }
+    
+
         footer {
             position: sticky;
             top: 100vh; /* Pushes the footer to the bottom of the viewport */
@@ -47,7 +40,7 @@
 
     
     <!-- Header + navigation links-->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-header">
+    <nav class="navbar navbar-expand-lg navbar-light bg-dark fixed-header">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
                 <a href="{{ url_for('main.index') }}">
