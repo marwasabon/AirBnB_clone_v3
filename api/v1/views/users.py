@@ -39,7 +39,7 @@ def get_user_id(user_id):
     user = storage.get("User", user_id)
     if user is None:
         abort(404)
-    return jsonify(user.to_dict())
+        # return jsonify(user.to_dict())
 
     # DELETE method
     if request.method == "DELETE":
@@ -53,7 +53,11 @@ def get_user_id(user_id):
 
     # PUT method
     elif request.method == "PUT":
-        data = request.get_json()
+        try:
+            data = request.get_json(force=True)
+        except Exception:
+            return jsonify({'error': 'Not a JSON'}), 400
+        
         if not data:
             return jsonify({'error': 'Not a JSON'}), 400
         keys_ignored = {"id", "email", "created_at", "updated_at"}
