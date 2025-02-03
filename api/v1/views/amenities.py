@@ -68,7 +68,7 @@ def get_amenity_id(amenity_id):
 
     # PUT method
     try:
-            data = request.get_json(force=True)
+        data = request.get_json(force=True)
     except Exception:
         return jsonify({'error': 'Not a JSON'}), 400
     if not data:
