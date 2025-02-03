@@ -20,8 +20,9 @@ def get_places(city_id):
             places.append(place.to_dict())
         return jsonify(places)
 
+
     # post method
-    elif request.method == "PUT":
+    elif request.method == "POST":
         try:
             data = request.get_json(force=True)
         except Exception:
