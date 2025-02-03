@@ -22,7 +22,7 @@ def get_amenites():
         try:
             data = request.get_json(force=True)  # `force=True` ignores Content-Type
         except Exception:
-            return jsonify({'error': 'Not a JSON'}), 400  # Now it returns 400 instead of 415
+            return jsonify({'error': 'Not a JSON'}), 400 
 
         
         # Validate JSON format
@@ -44,7 +44,7 @@ def get_amenites():
     if "name" not in data:
         return jsonify({'error': 'Missing name'}), 400
 
-    # create new amenity
+    # create new amenitysj
     amenity = Amenity(**data)
     amenity.save()
     return jsonify(amenity.to_dict()), 201'''
@@ -72,6 +72,6 @@ def get_amenity_id(amenity_id):
     if not data:
         abort(400, description="Not a JSON")
     keys_ignored = {"id", "created_at", "updated_at"}
-    [setattr(amenity, k, v) for k, v in data.items() if k not in key_ignored]
+    [setattr(amenity, k, v) for k, v in data.items() if k not in keys_ignored]
     amenity.save()
     return jsonify(amenity.to_dict()), 200
