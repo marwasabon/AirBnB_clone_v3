@@ -28,17 +28,17 @@ def get_users():
         return jsonify({'error': 'Missing password'}), 400
 
     # create new user
-    user = Amenity(**data)
+    user = User(**data)
     user.save()
     return jsonify(user.to_dict()), 201
 
 
 @app_views.route("/users/<user_id>", methods=["GET", "DELETE", "PUT"])
-def get_user_id(amenity_id):
+def get_user_id(user_id):
     """ Get methods for retriving users objects by id"""
-    user = storage.get("User", amenity_id)
+    user = storage.get("User", user_id)
     if user is None:
-        return jsonify({'error': 'User not found'}), 404
+        abort(404)
     return jsonify(user.to_dict())
 
     # DELETE method
@@ -52,10 +52,11 @@ def get_user_id(amenity_id):
         return jsonify(user.to_dict())
 
     # PUT method
-    data = request.get_json()
-    if not data:
-        return jsonify({'error': 'Not a JSON'}), 400
-    keys_ignored = {"id", "email", "created_at", "updated_at"}
-    [setattr(user, k, v) for k, v in data.items() if k not in keys_ignored]
-    user.save()
-    return jsonify(user.to_dict()), 200
+    elif request.method == "PUT":
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'Not a JSON'}), 400
+        keys_ignored = {"id", "email", "created_at", "updated_at"}
+        [setattr(user, k, v) for k, v in data.items() if k not in keys_ignored]
+        user.save()
+        return jsonify(user.to_dict()), 200

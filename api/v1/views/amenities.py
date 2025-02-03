@@ -54,9 +54,8 @@ def get_amenites():
 def get_amenity_id(amenity_id):
     """ Get methods for retriving amenities objects by id"""
     amenity = storage.get("Amenity", amenity_id)
-    if amenity is None:
-        return jsonify({'error': 'Amenity not found'}), 404
-    return jsonify(amenity.to_dict())
+    if not amenity:
+        abort(404)
 
     # DELETE method
     if request.method == "DELETE":
@@ -71,8 +70,8 @@ def get_amenity_id(amenity_id):
     # PUT method
     data = request.get_json()
     if not data:
-        return jsonify({'error': 'Not a JSON'}), 400
+        abort(400, description="Not a JSON")
     keys_ignored = {"id", "created_at", "updated_at"}
-    [setattr(amenity, k, v) for k, v in data.items() if k not in keys_ignored]
+    [setattr(amenity, k, v) for k, v in data.items() if k not in key_ignored]
     amenity.save()
     return jsonify(amenity.to_dict()), 200
