@@ -57,7 +57,7 @@ def get_user_id(user_id):
             data = request.get_json(force=True)
         except Exception:
             return jsonify({'error': 'Not a JSON'}), 400
-        
+
         if not data:
             return jsonify({'error': 'Not a JSON'}), 400
         keys_ignored = {"id", "email", "created_at", "updated_at"}
