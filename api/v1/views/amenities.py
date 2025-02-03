@@ -20,15 +20,14 @@ def get_amenites():
     elif request.method == "POST":
         # Parse JSON request
         try:
-            data = request.get_json(force=True)  # `force=True` ignores Content-Type
+            data = request.get_json(force=True)
         except Exception:
-            return jsonify({'error': 'Not a JSON'}), 400 
+            return jsonify({'error': 'Not a JSON'}), 400
 
-        
         # Validate JSON format
         if data is None:
             return jsonify({'error': 'Not a JSON'}), 400
-        
+
         # Ensure 'name' key exists
         if "name" not in data:
             return jsonify({'error': 'Missing name'}), 400
@@ -68,7 +67,10 @@ def get_amenity_id(amenity_id):
         return jsonify(amenity.to_dict())
 
     # PUT method
-    data = request.get_json()
+    try:
+            data = request.get_json(force=True)
+    except Exception:
+        return jsonify({'error': 'Not a JSON'}), 400
     if not data:
         abort(400, description="Not a JSON")
     keys_ignored = {"id", "created_at", "updated_at"}
