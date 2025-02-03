@@ -17,8 +17,29 @@ def get_amenites():
         return jsonify(amenitites)
 
     # post method
-    data = request.get_json()
-    if not data:
+    elif request.method == "POST":
+        # Parse JSON request
+        try:
+            data = request.get_json(force=True)  # `force=True` ignores Content-Type
+        except Exception:
+            return jsonify({'error': 'Not a JSON'}), 400  # Now it returns 400 instead of 415
+
+        
+        # Validate JSON format
+        if data is None:
+            return jsonify({'error': 'Not a JSON'}), 400
+        
+        # Ensure 'name' key exists
+        if "name" not in data:
+            return jsonify({'error': 'Missing name'}), 400
+
+        # Create and save new Amenity
+        amenity = Amenity(**data)
+        amenity.save()
+
+        return jsonify(amenity.to_dict()), 201
+    '''data = request.get_json()
+    if data is None:
         return jsonify({'error': 'Not a JSON'}), 400
     if "name" not in data:
         return jsonify({'error': 'Missing name'}), 400
@@ -26,7 +47,7 @@ def get_amenites():
     # create new amenity
     amenity = Amenity(**data)
     amenity.save()
-    return jsonify(amenity.to_dict()), 201
+    return jsonify(amenity.to_dict()), 201'''
 
 
 @app_views.route("/amenities/<amenity_id>", methods=["GET", "DELETE", "PUT"])
