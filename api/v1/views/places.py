@@ -20,14 +20,12 @@ def get_places(city_id):
             places.append(place.to_dict())
         return jsonify(places)
 
-
     # post method
     elif request.method == "POST":
         try:
             data = request.get_json(force=True)
         except Exception:
             return jsonify({'error': 'Not a JSON'}), 400
-
         if not data:
             return jsonify({'error': 'Not a JSON'}), 400
         user_id = data.get("user_id")
@@ -40,7 +38,7 @@ def get_places(city_id):
             return jsonify({'error': 'Missing name'}), 400
         data["city_id"] = city_id
         # create new place
-        place = place(**data)
+        place = Place(**data)
         place.save()
         return jsonify(place.to_dict()), 201
 
@@ -51,7 +49,7 @@ def get_place_id(place_id):
     place = storage.get("Place", place_id)
     if place is None:
         return jsonify({'error': 'place not found'}), 404
-    #return jsonify(place.to_dict())
+    # return jsonify(place.to_dict())
 
     # DELETE method
     if request.method == "DELETE":
@@ -73,6 +71,7 @@ def get_place_id(place_id):
         if not data:
             return jsonify({'error': 'Not a JSON'}), 400
         keys_ignored = {"id", "created_at", "user_id", "city_id", "updated_at"}
-        [setattr(place, k, v) for k, v in data.items() if k not in keys_ignored]
+        [setattr(place, k, v) for k, v in data.items()
+         if k not in keys_ignored]
         place.save()
         return jsonify(place.to_dict()), 200
