@@ -17,7 +17,7 @@ def retrieve_place_amenity(place_id):
     return jsonify([a.to_dict() for a in place.amenities])
 
 
-@app_views.route("/places/<place_id>/amenities/<amenity_id>", methods=["DELETE"])
+@app_views.route("/places/<place_id>/amenities/<amenity_id>", methods=["DELETE", "POST"])
 def delete_place_amenity(place_id, amenity_id):
     """Defines the DELETE method that Deletes a Amenity object to a Place.
     """
@@ -25,14 +25,28 @@ def delete_place_amenity(place_id, amenity_id):
     if place is None:
         abort(404)
 
-    amenity = storage.get("Amenity", amenity_id)
-    if amenity is None:
-        abort(404)
+    if request.method == "POST":
+        amenity = storage.get("Amenity", amenity_id)
+        if amenity is None:
+            abort(404)
 
-    if amenity not in place.amenities:
-        abort(404)
+        if amenity in place.amenities:
+            return jsonify(amenity.to_dict()), 200
 
-    place.amenities.delete(amenity)
-    storage.save()
+        place.amenities.append(amenity)
+        storage.save()
+        return jsonify(amenity.to_dict()), 201
 
-    return jsonify({}), 200
+    elif request.method == "DELETE":
+
+        amenity = storage.get("Amenity", amenity_id)
+        if amenity is None:
+            abort(404)
+
+        if amenity not in place.amenities:
+            abort(404)
+
+        place.amenities.delete(amenity)
+        storage.save()
+
+        return jsonify({}), 200
