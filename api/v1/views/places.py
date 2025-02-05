@@ -75,7 +75,7 @@ def get_place_id(place_id):
          if k not in keys_ignored]
         place.save()
         return jsonify(place.to_dict()), 200
-    
+
 
 @app_views.route("/places_search", methods=["POST"])
 def search_place():
@@ -86,6 +86,10 @@ def search_place():
 
     places = []
     place_ids = set()
+
+    if not data:
+        places = [place.to_dict() for place in storage.all("Place").values()]
+        return jsonify(places)
 
     # Get places by state
     if "states" in data:
@@ -110,15 +114,26 @@ def search_place():
 
     # Filter places by amenities
     if "amenities" in data:
-        amenities_set = {storage.get("Amenity", amenity_id) for amenity_id in data["amenities"]}
-        places = [place for place in places if all(storage.get("Amenity", amenity_id) in storage.get("Place", place["id"]).amenities for amenity_id in data["amenities"])]
+        amenities_set = {storage.get("Amenity", amenity_id)
+                         for amenity_id in data["amenities"]}
+        if places:
+            places = [place for place in places
+                      if amenities_set.issubset(set(place.amenities))]
+        else:
+            places = [place.to_dict() for place in storage.all("Place").
+                      values() if amenities_set.issubset(set(place.amenities))]
+        # places = [place for place in places if all(storage.
+        # get("Amenity", amenity_id) in storage.get("Place", place["id"])
+        # .amenities for amenity_id in data["amenities"])]
 
     return jsonify(places)
+
 
 '''
 @app_views.route("/places_search", methods=["POST"])
 def search_place():
-    """retrieves all Place objects depending of the JSON in the body of the request."""
+    """retrieves all Place objects depending
+    of the JSON in the body of the request."""
     data = request.get_json()
     if data is None:
         return jsonify({'error': 'Not a JSON'}), 400
@@ -144,7 +159,7 @@ def search_place():
                 for place in places:
                     if amenity not in place.amenities:
                         places.remove(place)
-    
+
     return jsonify(places)
     '''
 
@@ -152,7 +167,8 @@ def search_place():
 #revise the below code expecially the use of sets
 @app_views.route("/places_search", methods=["POST"])
 def search_place():
-    """Retrieves all Place objects depending on the JSON in the body of the request."""
+    """Retrieves all Place objects depending on the
+    JSON in the body of the request."""
     data = request.get_json()
     if data is None:
         return jsonify({'error': 'Not a JSON'}), 400
@@ -181,7 +197,8 @@ def search_place():
 
     # Filter places based on amenities
     if data.get("amenities"):
-        amenity_ids = set(data.get("amenities"))  # Use a set for faster lookups
+        amenity_ids = set(data.get("amenities"))
+        # Use a set for faster lookups
         filtered_places = []
         for place in places:
             place_amenity_ids = {amenity.id for amenity in place.amenities}
@@ -191,4 +208,5 @@ def search_place():
 
     # Convert places to dictionaries
     return jsonify([place.to_dict() for place in places])
-    '''
+
+'''
