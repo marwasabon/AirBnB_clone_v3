@@ -75,3 +75,46 @@ def get_place_id(place_id):
          if k not in keys_ignored]
         place.save()
         return jsonify(place.to_dict()), 200
+
+#revise the below code expecially the use of sets
+@app_views.route("/places_search", methods=["POST"])
+def search_place():
+    """Retrieves all Place objects depending on the JSON in the body of the request."""
+    data = request.get_json()
+    if data is None:
+        return jsonify({'error': 'Not a JSON'}), 400
+
+    places = set()  # Use a set to avoid duplicates
+
+    # Retrieve places based on states
+    if data.get("states"):
+        for state_id in data.get("states"):
+            state = storage.get("State", state_id)
+            if state:
+                for city in state.cities:
+                    for place in city.places:
+                        places.add(place)
+
+    # Retrieve places based on cities
+    if data.get("cities"):
+        for city_id in data.get("cities"):
+            city = storage.get("City", city_id)
+            if city:
+                for place in city.places:
+                    places.add(place)
+
+    # Convert set to list for easier manipulation
+    places = list(places)
+
+    # Filter places based on amenities
+    if data.get("amenities"):
+        amenity_ids = set(data.get("amenities"))  # Use a set for faster lookups
+        filtered_places = []
+        for place in places:
+            place_amenity_ids = {amenity.id for amenity in place.amenities}
+            if amenity_ids.issubset(place_amenity_ids):
+                filtered_places.append(place)
+        places = filtered_places
+
+    # Convert places to dictionaries
+    return jsonify([place.to_dict() for place in places])
