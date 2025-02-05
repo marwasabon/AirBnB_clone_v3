@@ -9,7 +9,8 @@ from flask import jsonify, abort, request
 
 @app_views.route("/places/<place_id>/amenities", methods=["GET"])
 def retrieve_place_amenity(place_id):
-    """Defines the GET method that Retrieves the list of all Amenity objects of a Place.
+    """Defines the GET method that Retrieves
+    the list of all Amenity objects of a Place.
     """
     place = storage.get("Place", place_id)
     if place is None:
@@ -17,7 +18,8 @@ def retrieve_place_amenity(place_id):
     return jsonify([a.to_dict() for a in place.amenities])
 
 
-@app_views.route("/places/<place_id>/amenities/<amenity_id>", methods=["DELETE", "POST"])
+@app_views.route("/places/<place_id>/amenities/<amenity_id>",
+                 methods=["DELETE", "POST"])
 def delete_place_amenity(place_id, amenity_id):
     """Defines the DELETE method that Deletes a Amenity object to a Place.
     """
@@ -46,7 +48,7 @@ def delete_place_amenity(place_id, amenity_id):
         if amenity not in place.amenities:
             abort(404)
 
-        place.amenities.delete(amenity)
+        place.amenities.remove(amenity)
         storage.save()
 
         return jsonify({}), 200
