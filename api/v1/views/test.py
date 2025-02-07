@@ -5,23 +5,23 @@ import json
 import requests
 
 if __name__ == "__main__":
-    """ Get amenity_id with name Wifi
+    """ Get state_id (only one city)
     """
-    r = requests.get("http://0.0.0.0:5000/api/v1/amenities")
+    r = requests.get("http://0.0.0.0:5000/api/v1/states")
     r_j = r.json()
     
-    amenity_id = None
-    for amenity_j in r_j:
-        if amenity_j.get('name') == "TV":
-            amenity_id = amenity_j.get('id')
+    state_id = None
+    for state_j in r_j:
+        rs = requests.get("http://0.0.0.0:5000/api/v1/states/{}/cities".format(state_j.get('id')))
+        rs_j = rs.json()
+        if len(rs_j) == 1: 
+            state_id = state_j.get('id')
             break
     
-    # Only Wifi
-    print(amenity_id)
+    # Only Arizona
     
     """ POST /api/v1/places_search
     """
-    r = requests.post("http://0.0.0.0:5000/api/v1/places_search", data=json.dumps({ 'amenities': [amenity_id] }), headers={ 'Content-Type': "application/json" })
+    r = requests.post("http://0.0.0.0:5000/api/v1/places_search", data=json.dumps({ 'states': [state_id] }), headers={ 'Content-Type': "application/json" })
     r_j = r.json()
     print(len(r_j))
-    print(r_j)

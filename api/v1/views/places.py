@@ -118,37 +118,19 @@ def search_place():
         amenities_set = set(data["amenities"])  # Set of required amenity IDs
 
         if places:
-            places = [place for place in places
-                    if amenities_set.issubset({amenity.id for amenity in place.amenities})]
-        else:  # If state and city weren't selected, fetch all places and filter by amenity IDs
-           places = [place for place in storage.all("Place").values()
-                   if amenities_set.issubset({amenity.id for amenity in place.amenities})]
-#            x = 0
-#            for place in storage.all("Place").values():
-#                # place = place.to_dict()
-#                if amenities_set.issubset({amenity.id for amenity in place.amenities}):
-#                    places.append(place.to_dict())
-#                if x > 154:
-#                    print(place)
-#                    print('xxxxxxxxxxxxxxxxxxxxxxxx')
-#                    print(place.amenities)
-#                    for amenity in place.amenities:
-#                        print(amenity)
-#                    print('-----------------------------')
-#                    print(f"{x}ID: {place.id}, Name: {place.name}, Amenities: {[amenity.id for amenity in place.amenities]}")
-#                    print(f"amenities_set: {amenities_set}")
-#                    print(f"amenities_set.issubset: {amenities_set.issubset({amenity.id for amenity in place.amenities})}")
-#                    print()
-#                x += 1
-#                places.append(place.to_dict())
-            
+            places = [place for place in places if amenities_set.issubset({
+                amenity.id for amenity in place.amenities})]
 
-        # places = [place for place in places if all(storage.
-        # get("Amenity", amenity_id) in storage.get("Place", place["id"])
-        # .amenities for amenity_id in data["amenities"])]
-#    return jsonify(places)
+        # If state and city weren't selected,
+        # fetch all places and filter by amenity IDs
+        else:
+            places = [place for place in storage.all("Place").values()
+                      if amenities_set.issubset({amenity.id for amenity
+                                                in place.amenities})]
 
-    return jsonify([place.to_dict() for place in places])
+        places = [place.to_dict() for place in places]
+
+    return jsonify(places)
 
 
 '''
