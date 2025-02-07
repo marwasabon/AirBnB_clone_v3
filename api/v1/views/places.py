@@ -118,8 +118,18 @@ def search_place():
         amenities_set = set(data["amenities"])  # Set of required amenity IDs
 
         if places:
-            places = [place for place in places if amenities_set.issubset({
-                amenity.id for amenity in place.amenities})]
+            x = 0
+            for place in places:
+                if x < 8:
+                    a_id = [amenity['id'] for amenity in place['amenities']]
+                    print(place)
+                    print()
+                    print(a_id)
+                    print()
+                x += 1
+
+            places = [place for place in places if amenities_set.issubset([
+                amenity['id'] for amenity in place['amenities']])]
 
         # If state and city weren't selected,
         # fetch all places and filter by amenity IDs
@@ -128,7 +138,7 @@ def search_place():
                       if amenities_set.issubset({amenity.id for amenity
                                                 in place.amenities})]
 
-        places = [place.to_dict() for place in places]
+            places = [place.to_dict() for place in places]
 
     return jsonify(places)
 
