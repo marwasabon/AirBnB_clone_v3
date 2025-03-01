@@ -15,13 +15,14 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(30), unique=True)
     password = db.Column(db.String(255), nullable=False)
     email = Column(String(100), nullable=False)
+    image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
     items = relationship('Item', back_populates='user')
     claims = relationship('Claim', back_populates='user')
     role_id = Column(Integer, ForeignKey('roles.id'))
     role = relationship('Role', backref='users')
     
     def __repr__(self):
-        return 'User: [id: {}, username: {}, Email: {}, role: {}'.format(self.id, self.username, self.email,self.role)
+        return 'User: [id: {}, username: {}, Email: {}, Profile_image: {}, role: {}'.format(self.id, self.username, self.email, self.image_file, self.role)
     
     def set_password(self, password):
         self.password = generate_password_hash(password)

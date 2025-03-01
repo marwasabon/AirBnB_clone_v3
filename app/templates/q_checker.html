@@ -165,12 +165,32 @@
                         <tr>
                             <th scope="row">{{ loop.index }}</th>
                             <th scope="row">{{ match.match_id }}</th>
-                            <td><a href="#" class="claim-link" data-claim-id="{{ match.match_id }}">{{ match.claim_description }}</a></td>
+                            <td><a href="#" class="claim-link" data-claim-id="{{ match.match_id }}" data-bs-toggle="modal" data-bs-target="#claimModal">{{ match.claim_description }}</a></td>
                             <td>
                                 <button class="btn btn-danger reject-claim" data-claim-id="{{ match.match_id }}">Reject</button>
                                 <button class="btn btn-success confirm-claim" data-claim-id="{{ match.match_id }}">Confirm</button>
                             </td>
                         </tr>
+                        <!-- Claim Modal -->
+                        <div class="modal fade" id="claimModal" tabindex="-1" role="dialog" aria-labelledby="claimModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="claimModalLabel">Claim Details</h5>
+                                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         {% endfor %}
                     </tbody>
                 </table>
@@ -200,18 +220,6 @@
     </div>
 </div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const rejectButtons = document.querySelectorAll('.reject-claim');
-        const confirmButtons = document.querySelectorAll('.confirm-claim');
 
-        
-</script>
-
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
-<script src="../js/script.js"></script>
 {% endblock content %}
 
