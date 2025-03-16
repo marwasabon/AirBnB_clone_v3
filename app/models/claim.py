@@ -1,19 +1,18 @@
 from app import db
 from app.models.base_model import BaseModel
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Enum
-from sqlalchemy.orm import relationship
 from datetime import datetime
 
-class Claim(db.Model):
+class Claim(BaseModel):
+    """Tracks verified claims on items"""
     __tablename__ = 'claims'
-    id = Column(Integer, primary_key=True)
-    date_claimed = Column(DateTime, default=datetime.utcnow)
-    additional_information = Column(String(255))
-    status = db.Column(db.String(50), nullable=False, default='pending')
-    item_id = Column(Integer, ForeignKey('items.id'))
-    user_id = Column(Integer, ForeignKey('users.id'))
-    item = relationship('Item', back_populates='claims')
-    user = relationship('User', back_populates='claims')
-    image_url = Column(String(255), nullable=True)  
-
-    #matches = relationship('Match', back_populates='claims')
+    date_claimed = db.Column(db.DateTime, default=datetime.utcnow)
+    additional_information = db.Column(db.Text, nullable=True)
+    proof_image_url = db.Column(db.String(255), nullable=True)  # Proof of ownership
+    status = db.Column(db.Enum('pending', 'approved', 'rejected', name='claim_status'), 
+                       nullable=False, default='pending')
+    item_id = db.Column(db.Integer, db.ForeignKey('items.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    item = db.relationship('Item', back_populates='claims')
+    user = db.relationship('User', back_populates='claims')
+    location_lost = db.Column(db.String(255), nullable=True)
+    date_lost = db.Column(db.DateTime, nullable=True)

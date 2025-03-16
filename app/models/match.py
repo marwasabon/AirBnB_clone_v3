@@ -1,15 +1,13 @@
 from app import db
 from app.models.base_model import BaseModel
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Enum
-from sqlalchemy.orm import relationship
 
-class Match(db.Model):
+
+class Match(BaseModel):
+    """Confirmed match between a claim and an item"""
     __tablename__ = 'matches'
-    id = Column(Integer, primary_key=True)
-    item_id = Column(Integer, ForeignKey('items.id'))
-    potential_owner_user_id = Column(Integer, ForeignKey('users.id'))
-    item = relationship('Item', back_populates='matches')
-    quality_checks = relationship('QualityCheck', back_populates='match')
-    status = db.Column(db.String(50), nullable=False, default='pending')
-    #claim = relationship('Claim', back_populates='matches')
-    claim_id = Column(Integer, ForeignKey('claims.id'))  # Add claim_id field
+    item_id = db.Column(db.Integer, db.ForeignKey('items.id'))
+    claim_id = db.Column(db.Integer, db.ForeignKey('claims.id'))
+    status = db.Column(db.Enum('pending', 'confirmed', name='match_status'), 
+                       nullable=False, default='pending')
+    item = db.relationship('Item', back_populates='matches')
+    claim = db.relationship('Claim', backref='match')

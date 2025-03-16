@@ -1,5 +1,5 @@
-from app import db
-from app.models.base_model import BaseModel
+#from app import db
+#from app.models.base_model import BaseModel
 from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Enum
 from sqlalchemy.orm import relationship
 from datetime import datetime
@@ -14,3 +14,4 @@ class QualityCheck(db.Model):
     match = relationship('Match', back_populates='quality_checks')
     quality_checker_user_id = Column(Integer, ForeignKey('users.id'))
     quality_checker_user = relationship('User', foreign_keys=[quality_checker_user_id])
+

@@ -1,23 +1,37 @@
-from flask_sqlalchemy import SQLAlchemy
+from app import db
 from datetime import datetime
-from sqlalchemy.orm import declarative_base
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Enum
-db = SQLAlchemy()
 
-Base = declarative_base()
+
 
 class BaseModel(db.Model):
-    __abstract__ = True  # Indicates that this class should not be created as a table
-    #id = db.Column(db.Integer, primary_key=True)
+    """Base class for all models"""
+    __abstract__ = True
+    id = db.Column(db.Integer, primary_key=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     def save(self):
-        """Save the object to the database."""
-        db.session.add(self)
-        db.session.commit()
+        """Save the object to the database"""
+        try:
+            db.session.add(self)
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            raise e
 
     def delete(self):
-        """Delete the object from the database."""
-        db.session.delete(self)
-        db.session.commit()
+        """Delete the object from the database"""
+        try:
+            db.session.delete(self)
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            raise e
+
+    def to_dict(self):
+        """Convert object to a dictionary"""
+        data = self.__dict__.copy()
+        if '_sa_instance_state' in data:
+            del data['_sa_instance_state']
+        return data
+
